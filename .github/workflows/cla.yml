@@ -25,4 +25,4 @@ jobs:
           remote-repository-name: 'freshli-lib-cla'
           create-file-commit-message: 'Adds file for storing CLA Signatures'
           signed-commit-message: 'Adds CLA signature for $contributorName (PR #$pullRequestNo)'
-          custom-notsigned-prcomment: 'Thank you for your submission to Freshli! Like many open-source projects, we ask that you agree to our [Contributor License Agreement](https://github.com/corgibytes/freshli-agent-java/blob/main/CLA/CLA-v1.0.md) before we can accept your contribution. You can sign the CLA by posting a comment in this PR matching the text below:'
+          custom-notsigned-prcomment: 'Thank you for your submission to Freshli! Like many open-source projects, we ask that you agree to our [Contributor License Agreement](https://github.com/corgibytes/freshli/blob/main/CLA/CLA-v1.0.md) before we can accept your contribution. You can sign the CLA by posting a comment in this PR matching the text below:'
