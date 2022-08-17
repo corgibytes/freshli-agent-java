@@ -27,5 +27,5 @@ tasks.withType<KotlinCompile> {
 }
 
 application {
-    mainClass.set("MainKt")
+    mainClass.set("com.corgibytes.freshli.agent.java.MainKt")
 }
