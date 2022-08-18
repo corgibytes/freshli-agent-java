@@ -14,6 +14,9 @@ repositories {
 
 dependencies {
     implementation("com.github.ajalt.clikt:clikt:3.4.0")
+    implementation("com.corgibytes:dependency-history-maven:2.0.+")
+    implementation("com.github.package-url:packageurl-java:1.4.1")
+
     testImplementation(kotlin("test"))
 }
 
