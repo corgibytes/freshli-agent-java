@@ -14,7 +14,7 @@ class FreshliAgentJava: CliktCommand() {
 }
 
 class RetrieveReleaseHistory: CliktCommand(help="Retrieves release history for a specific package") {
-    val packageURL by argument()
+    private val packageURL by argument()
     override fun run() {
         val purl: PackageURL
         try {
@@ -25,7 +25,11 @@ class RetrieveReleaseHistory: CliktCommand(help="Retrieves release history for a
         }
 
         val service: ReleaseHistoryService = if (purl.qualifiers != null && purl.qualifiers.containsKey("repository_url")) {
-            ReleaseHistoryService("https://" + purl.qualifiers["repository_url"]!!)
+            var repositoryUrl = purl.qualifiers["repository_url"]!!
+            if (!repositoryUrl.contains("://")) {
+                repositoryUrl = "https://$repositoryUrl"
+            }
+            ReleaseHistoryService(repositoryUrl)
         } else {
             ReleaseHistoryService()
         }
