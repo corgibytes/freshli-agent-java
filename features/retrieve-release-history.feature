@@ -10,6 +10,10 @@ Feature: `retrieve-release-history` command
     Since the `retrieve-release-history` always outputs the full release history, it's expected that the version
     component will be omitted from the provided package url.
 
+    Note: This scenario included all of the versions for the `apache-maven` package at the time that it was authored. It
+    is expected that this scenario will still pass when newer versions become available and are added to the end of the
+    output.
+
     When I run `freshli-agent-java retrieve-release-history pkg:maven/org.apache.maven/apache-maven`
     Then the output should contain:
     """
@@ -61,7 +65,6 @@ Feature: `retrieve-release-history` command
     3.8.4	2021-11-14T09:19:02Z
     3.8.5	2022-03-05T15:41:10Z
     """
-
 
   Scenario: Valid Package URL from alternative repository
     Some packages are not located in the default repository, such as the `org.springframework.spring-core` package. The
