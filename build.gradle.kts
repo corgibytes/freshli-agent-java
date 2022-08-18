@@ -27,5 +27,16 @@ tasks.withType<KotlinCompile> {
 }
 
 application {
-    mainClass.set("MainKt")
+    mainClass.set("com.corgibytes.freshli.agent.java.MainKt")
 }
+
+tasks.register<Exec>("publishExe") {
+    commandLine("bash", "-c", "mkdir -p exe && ln -sF ../build/install/freshli-agent-java/bin/freshli-agent-java exe/freshli-agent-java")
+}
+tasks.named("installDist") { finalizedBy("publishExe") }
+
+tasks.register<Delete>("cleanExe") {
+    isFollowSymlinks = false
+    delete("exe")
+}
+tasks.named("clean") { finalizedBy("cleanExe") }

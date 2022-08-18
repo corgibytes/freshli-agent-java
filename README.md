@@ -14,6 +14,16 @@ docker build -t freshli-agent-java .
 
 ### Without Docker
 
+#### Using `bin/build.rb`
+
+Assuming you have a recent version of Ruby installed, and you're able to install RubyGems with being logged in as root, then you can use the `bin/build.rb` script to build the application.
+
+```bash
+bin/build.rb
+```
+
+#### Using Gradle
+
 Make sure you have JDK version 17 or later installed and have your `JAVA_HOME` environment varibale set appropriately.
 
 Run the following command to create a complete deployable distribution for the project.
@@ -50,4 +60,36 @@ You can run the program from the distribution that's created by the `installDist
 
 ```bash
 ./build/install/freshli-agent-java/bin/freshli-agent-java --help
+```
+
+#### Using symbolic link in `exe` directory
+
+`./gradlew installDist` (which is also run by `bin/build.rb`) creates a symbolic link in the `exe` directory to assist with running the application. The symbolic link points to the directory in the distribution directory as described above.
+
+```bash
+exe/freshli-agent-java --help
+```
+
+### Running Tests
+
+#### Using `bin/test.rb`
+
+You can run both the application's unit tests that are written in Kotlin and the application's acceptance tests that are written using Cucumber and Aruba by running:
+
+```bash
+bin/test.rb
+```
+
+#### Running Directly
+
+The application's unit tests can be run with:
+
+```bash
+./gradlew test
+```
+
+And the application's acceptance tests can be run with:
+
+```bash
+bundle exec cucumber
 ```

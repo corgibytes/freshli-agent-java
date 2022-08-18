@@ -1,0 +1,44 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, release* ]
+    tags: [ v* ]
+  pull_request:
+    branches: [ main, release* ]
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+    env:
+      BUILD_ARTIFACTS_FOLDER: build_artifacts
+
+    steps:
+      - name: "[Setup] - Checkout code"
+        uses: actions/checkout@v3
+        with:
+          submodules: 'recursive'
+
+      - name: "[Setup] - Java"
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: "[Setup] - Install Ruby"
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.1 # Not needed with a .ruby-version file
+          bundler-cache: true
+
+      - name: "[Lint] - run linters"
+        run: |
+          ./bin/lint.rb
+
+      - name: "[Build] - run build"
+        run: |
+          ./bin/build.rb
+
+      - name: "[Test] - run all tests"
+        run: |
+          ./bin/test.rb --skip-build
