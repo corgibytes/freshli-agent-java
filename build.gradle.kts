@@ -13,7 +13,7 @@ repositories {
 }
 
 dependencies {
-    implementation("com.github.ajalt.clikt:clikt:3.4.0")
+    implementation("com.github.ajalt.clikt:clikt:3.5.0")
     testImplementation(kotlin("test"))
 }
 
