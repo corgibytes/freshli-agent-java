@@ -16,11 +16,15 @@ class RetrieveReleaseHistory: CliktCommand(help="Retrieves release history for a
     override fun run() {
         val purl = PackageURL(packageURL)
 
-        val service = ReleaseHistoryService("https://" + purl.qualifiers["repository_url"]!!)
+        val service: ReleaseHistoryService = if (purl.qualifiers != null && purl.qualifiers.containsKey("repository_url")) {
+            ReleaseHistoryService("https://" + purl.qualifiers["repository_url"]!!)
+        } else {
+            ReleaseHistoryService()
+        }
 
         val actualResults = service.getVersionHistory(purl.namespace, purl.name)
 
-        actualResults.asSequence().sortedBy { it.value.toString() + it.key }.forEach {
+        actualResults.asSequence().sortedBy { it.value.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME) + it.key }.forEach {
             println(it.key + "\t" + it.value.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME))
         }
     }
