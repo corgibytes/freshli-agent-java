@@ -13,6 +13,14 @@ class FreshliAgentJava: CliktCommand() {
     override fun run() = Unit
 }
 
+class ValidatingPackageUrls: CliktCommand(help="Lists package urls that can be used to validate this agent") {
+    override fun run() {
+        println("pkg:maven/org.apache.maven/apache-maven")
+        println("pkg:maven/org.springframework/spring-core?repository_url=repo.spring.io%2Frelease")
+        println("pkg:maven/org.springframework/spring-core?repository_url=http%3A%2F%2Frepo.spring.io%2Frelease")
+    }
+}
+
 class RetrieveReleaseHistory: CliktCommand(help="Retrieves release history for a specific package") {
     private val packageURL by argument()
     override fun run() {
@@ -62,5 +70,5 @@ class ProcessManifests: CliktCommand(help="Processes manifest files in the speci
 }
 
 fun main(args: Array<String>) = FreshliAgentJava()
-    .subcommands(RetrieveReleaseHistory(), ValidatingRepositories(), DetectManifests(), ProcessManifests())
+    .subcommands(ValidatingPackageUrls(), RetrieveReleaseHistory(), ValidatingRepositories(), DetectManifests(), ProcessManifests())
     .main(args)
