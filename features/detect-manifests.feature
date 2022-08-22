@@ -14,7 +14,7 @@ Feature: `detect-manifests` command
     This project contains several `pom.xml` files, but since all but the root file is a sub-module, then only the root
     `pom.xml` file should be included in the output.
 
-    Given I clone the git repository "https://github.com/questdb/questdb" with the sha "3fedfed87ff8ed5d29752472b0f34b1e13c30172"
+    Given I clone the git repository "https://github.com/questdb/questdb" with the sha "0b465538639e24850e3471bdb0a234c20d8af58b"
     When I run `freshli-agent-java detect-manifests tmp/repositories/questdb`
     Then it should pass with exactly:
     """
@@ -25,19 +25,18 @@ Feature: `detect-manifests` command
     This project contains several `pom.xml` files. All of the files appear within the `java` directory or one of it's
     sub-directories. The file located at `java/pom.xml` references all of the other `pom.xml` files as sub-modules.
 
-    Given I clone the git repository "https://github.com/protocolbuffers/protobuf" with the sha "b39e9b3cff331d84f504699b16ff60d2596d9535"
+    Given I clone the git repository "https://github.com/protocolbuffers/protobuf" with the sha "d8421bd49c1328dc5bcaea2e60dd6577ac235336"
     When I run `freshli-agent-java detect-manifests tmp/repositories/protobuf`
     Then it should pass with exactly:
     """
     java/pom.xml
     """
-    And the exit status should be 0
 
   Scenario: Unrelated modules located in sub-directories
     This project contains two `pom.xml` files, neither of which has any sub-modules. Therefore, each file should be
     listed.
 
-    Given I clone the git repository "https://github.com/serverless/serverless" with the sha "076661f99503c24204ea5ebca6beaab79f39106d"
+    Given I clone the git repository "https://github.com/serverless/serverless" with the sha "9c2ebb78d8db30acde24bd31efa1d6516d177b0e"
     When I run `freshli-agent-java detect-manifests tmp/serverless`
     Then it should pass with exactly:
     """
