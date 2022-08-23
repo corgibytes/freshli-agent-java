@@ -1,7 +1,13 @@
 package com.corgibytes.freshli.agent.java
 
+import com.corgibytes.maven.ReleaseHistoryService
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.core.subcommands
+import com.github.ajalt.clikt.parameters.arguments.argument
+import com.github.packageurl.MalformedPackageURLException
+import com.github.packageurl.PackageURL
+import java.time.format.DateTimeFormatter
+import kotlin.system.exitProcess
 
 class FreshliAgentJava: CliktCommand() {
     override fun run() = Unit
@@ -12,6 +18,42 @@ class ValidatingPackageUrls: CliktCommand(help="Lists package urls that can be u
         println("pkg:maven/org.apache.maven/apache-maven")
         println("pkg:maven/org.springframework/spring-core?repository_url=repo.spring.io%2Frelease")
         println("pkg:maven/org.springframework/spring-core?repository_url=http%3A%2F%2Frepo.spring.io%2Frelease")
+    }
+}
+
+class RetrieveReleaseHistory: CliktCommand(help="Retrieves release history for a specific package") {
+    private val packageURL by argument()
+    override fun run() {
+        val purl: PackageURL
+        try {
+            purl = PackageURL(packageURL)
+        } catch (error: MalformedPackageURLException) {
+            println("Unable to parse the Package URL: $packageURL.")
+            exitProcess(-1)
+        }
+
+        val service: ReleaseHistoryService = if (purl.qualifiers != null && purl.qualifiers.containsKey("repository_url")) {
+            var repositoryUrl = purl.qualifiers["repository_url"]!!
+            if (!repositoryUrl.contains("://")) {
+                repositoryUrl = "https://$repositoryUrl"
+            }
+            ReleaseHistoryService(repositoryUrl)
+        } else {
+            ReleaseHistoryService()
+        }
+
+        val actualResults = service.getVersionHistory(purl.namespace, purl.name)
+
+        if (actualResults.isEmpty()) {
+            println("Unable to find release history for $packageURL.")
+            exitProcess(-1)
+        }
+        else {
+            actualResults.asSequence().sortedBy { it.value.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME) + it.key }
+                .forEach {
+                    println(it.key + "\t" + it.value.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME))
+                }
+        }
     }
 }
 
@@ -28,5 +70,5 @@ class ProcessManifests: CliktCommand(help="Processes manifest files in the speci
 }
 
 fun main(args: Array<String>) = FreshliAgentJava()
-    .subcommands(ValidatingPackageUrls(), ValidatingRepositories(), DetectManifests(), ProcessManifests())
+    .subcommands(ValidatingPackageUrls(), RetrieveReleaseHistory(), ValidatingRepositories(), DetectManifests(), ProcessManifests())
     .main(args)
