@@ -6,13 +6,11 @@ import com.github.ajalt.clikt.core.subcommands
 import com.github.ajalt.clikt.parameters.arguments.argument
 import com.github.packageurl.MalformedPackageURLException
 import com.github.packageurl.PackageURL
-import java.time.format.DateTimeFormatter
-import kotlin.system.exitProcess
-import com.github.ajalt.clikt.parameters.arguments.argument
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader
 import java.io.File
 import java.io.FileInputStream
-import java.nio.file.Path
+import java.time.format.DateTimeFormatter
+import kotlin.system.exitProcess
 
 
 class FreshliAgentJava: CliktCommand() {
