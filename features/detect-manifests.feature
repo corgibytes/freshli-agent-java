@@ -30,9 +30,9 @@ Feature: `detect-manifests` command
     When I run `freshli-agent-java detect-manifests tmp/repositories/protobuf`
     Then it should pass with exactly:
     """
-    protoc-artifacts/pom.xml
     java/pom.xml
     java/protoc/pom.xml
+    protoc-artifacts/pom.xml
     ruby/pom.xml
     """
 
