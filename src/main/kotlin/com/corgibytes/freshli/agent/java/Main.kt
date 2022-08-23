@@ -85,7 +85,7 @@ class DetectManifests: CliktCommand(help="Detects manifest files in the specifie
 
         results.removeIf { submodules.contains(it) }
 
-        results.map{ it.removePrefix(path + "/") }.sorted().forEach {
+        results.map{ it.removePrefix("$path/") }.sorted().forEach {
             println(it)
         }
     }
