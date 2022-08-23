@@ -66,7 +66,7 @@ class ValidatingRepositories: CliktCommand(help="Lists repositories that can be 
 }
 
 class DetectManifests: CliktCommand(help="Detects manifest files in the specified directory") {
-    val path by argument()
+    private val path by argument()
 
     override fun run() {
         // start by finding all of the pom.xml files and storing them in a results list
