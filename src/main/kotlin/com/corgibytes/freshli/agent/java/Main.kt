@@ -2,6 +2,12 @@ package com.corgibytes.freshli.agent.java
 
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.core.subcommands
+import com.github.ajalt.clikt.parameters.arguments.argument
+import org.apache.maven.model.io.xpp3.MavenXpp3Reader
+import java.io.File
+import java.io.FileInputStream
+import java.nio.file.Path
+
 
 class FreshliAgentJava: CliktCommand() {
     override fun run() = Unit
@@ -20,7 +26,29 @@ class ValidatingRepositories: CliktCommand(help="Lists repositories that can be 
 }
 
 class DetectManifests: CliktCommand(help="Detects manifest files in the specified directory") {
-    override fun run() = Unit
+    val path by argument()
+
+    override fun run() {
+        // start by finding all of the pom.xml files and storing them in a results list
+        val submodules = mutableListOf<String>()
+        val directory = File(path)
+        val results = directory.walkTopDown().filter { it.name == "pom.xml" }.map { it.path }.toMutableList()
+
+        val mavenReader = MavenXpp3Reader()
+        // for each pom.xml file in the list
+        results.forEach {modelFileName: String ->
+            val model = mavenReader.read(FileInputStream(modelFileName))
+            model.modules.forEach {moduleName: String ->
+                submodules.add(File(modelFileName).toPath().resolveSibling(moduleName).resolve("pom.xml").toString())
+            }
+        }
+
+        results.removeIf { submodules.contains(it) }
+
+        results.map{ it.removePrefix(path + "/") }.forEach {
+            println(it)
+        }
+    }
 }
 
 class ProcessManifests: CliktCommand(help="Processes manifest files in the specified directory") {

@@ -1,7 +1,7 @@
 require 'fileutils'
 
 Given('I clone the git repository {string} with the sha {string}') do |repository_url, sha|
-  repositories_dir = "tmp/repositories"
+  repositories_dir = "#{Aruba.config.working_directory}/tmp/repositories"
   cloned_dir = "#{repositories_dir}/#{repository_url.split("/").last}"
 
   FileUtils.mkdir_p(repositories_dir)

@@ -14,6 +14,7 @@ repositories {
 
 dependencies {
     implementation("com.github.ajalt.clikt:clikt:3.5.0")
+    implementation("org.apache.maven:maven-model:3.8.6")
     testImplementation(kotlin("test"))
 }
 

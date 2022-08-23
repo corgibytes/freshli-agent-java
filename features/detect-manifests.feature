@@ -21,15 +21,19 @@ Feature: `detect-manifests` command
     pom.xml
     """
 
-  Scenario: A multi-module project located in a sub-directory
-    This project contains several `pom.xml` files. All of the files appear within the `java` directory or one of it's
-    sub-directories. The file located at `java/pom.xml` references all of the other `pom.xml` files as sub-modules.
+  Scenario: A multi-module project located in a sub-directory along with `pom.xml` files in other directories
+    This project contains several `pom.xml` files. Many of the files appear within the `java` directory or one of it's
+    sub-directories. The file located at `java/pom.xml` references all but one of the `pom.xml` files in the `java`
+    directory as sub-modules. The rest of the `pom.xml` files contain no modules.
 
     Given I clone the git repository "https://github.com/protocolbuffers/protobuf" with the sha "d8421bd49c1328dc5bcaea2e60dd6577ac235336"
     When I run `freshli-agent-java detect-manifests tmp/repositories/protobuf`
     Then it should pass with exactly:
     """
+    protoc-artifacts/pom.xml
     java/pom.xml
+    java/protoc/pom.xml
+    ruby/pom.xml
     """
 
   Scenario: Unrelated modules located in sub-directories
@@ -37,7 +41,7 @@ Feature: `detect-manifests` command
     listed.
 
     Given I clone the git repository "https://github.com/serverless/serverless" with the sha "9c2ebb78d8db30acde24bd31efa1d6516d177b0e"
-    When I run `freshli-agent-java detect-manifests tmp/serverless`
+    When I run `freshli-agent-java detect-manifests tmp/repositories/serverless`
     Then it should pass with exactly:
     """
     docs/providers/openwhisk/examples/hello-world/java/pom.xml
