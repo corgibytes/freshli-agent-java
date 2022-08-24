@@ -31,6 +31,13 @@ jobs:
           ruby-version: 3.1 # Not needed with a .ruby-version file
           bundler-cache: true
 
+      - name: "[Setup] - Install CycloneDX CLI"
+        run: |
+          cd bin
+          curl -LO https://github.com/CycloneDX/cyclonedx-cli/releases/download/v0.24.0/cyclonedx-linux-x64
+          chmod a+x cyclonedx-linux-x64
+          mv cyclonedx-linux-x64 cyclonedx
+
       - name: "[Lint] - run linters"
         run: |
           ./bin/lint.rb
