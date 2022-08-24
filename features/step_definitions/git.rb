@@ -20,3 +20,11 @@ Given('I clone the git repository {string} with the sha {string}') do |repositor
     raise "Failed to checkout #{sha}"
   end
 end
+
+Then('running git status should not report any modifications for {string}') do |git_repository_path|
+  system("git add .", chdir: git_repository_path, out: '/dev/null', err: '/dev/null')
+  unless system('git diff-index --quiet HEAD --', chdir: git_repository_path, out: '/dev/null', err: '/dev/null')
+    raise "The working directory is not clean: #{git_repository_path}"
+  end
+end
+
