@@ -115,6 +115,7 @@ class ProcessManifest: CliktCommand(help="Processes manifest files in the specif
 
         val bomFile = manifestDirectory.resolve("target").resolve("bom.json")
         if (bomFile.exists()) {
+            println("Generated file:")
             println(bomFile.toFile().path)
         } else {
             println("Failed to process manifest: $manifestLocation")
