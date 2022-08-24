@@ -148,13 +148,13 @@ class ProcessManifest: CliktCommand(help="Processes manifest files in the specif
             )
 
             if (result.resultCode != 0) {
-                println("Failed to resolve version ranges:")
                 result.output.forEach { println(it) }
                 failureDetected = true
             }
         }
 
         if (failureDetected) {
+            println("Failed to resolve version ranges. See command output for more information.")
             throw ProgramResult(-1)
         }
     }
@@ -175,13 +175,13 @@ class ProcessManifest: CliktCommand(help="Processes manifest files in the specif
             )
 
             if (result.resultCode != 0) {
-                println("Failed to resolve version ranges:")
                 result.output.forEach { println(it) }
                 failureDetected = true
             }
         }
 
         if (failureDetected) {
+            println("Failed to resolve version ranges. See command output for more information.")
             throw ProgramResult(-1)
         }
     }
