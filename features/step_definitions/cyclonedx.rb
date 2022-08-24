@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Then('the CycloneDX file {string} should be valid') do |bom_path|
   unless system("cyclonedx validate --fail-on-errors --input-file #{Aruba.config.working_directory}/#{bom_path}",
                 out: '/dev/null', err: '/dev/null')
