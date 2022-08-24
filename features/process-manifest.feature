@@ -14,7 +14,7 @@ Feature: `process-manifest` command
     When I run `freshli-agent-java process-manifest tmp/repositories/freshli-fixture-java-maven-version-range/pom.xml 2021-01-01T00:00:00Z`
     Then it should pass with exactly:
     """
-    target/bom.json
+    tmp/repositories/freshli-fixture-java-maven-version-range/target/bom.json
     """
     And the CycloneDX file "tmp/repositories/freshli-fixture-java-maven-version-range/target/bom.json" should be valid
     And the CycloneDX file "tmp/repositories/freshli-fixture-java-maven-version-range/target/bom.json" should contain "pkg:maven/commons-io/commons-io@2.8.0?type=jar"
@@ -29,12 +29,12 @@ Feature: `process-manifest` command
     When I run `freshli-agent-java process-manifest tmp/repositories/questdb/pom.xml 2022-08-23T19:45:55Z`
     Then it should pass with exactly:
     """
-    target/bom.json
+    tmp/repositories/questdb/target/bom.json
     """
     And the CycloneDX file "tmp/repositories/questdb/target/bom.json" should be valid
     And the CycloneDX file "tmp/repositories/questdb/target/bom.json" should contain "pkg:maven/org.jetbrains/annotations@17.0.0?type=jar"
     And the CycloneDX file "tmp/repositories/questdb/target/bom.json" should contain "pkg:maven/com.chrisnewland/jitwatch@1.0.0?type=jar"
-    And the CycloneDX file "tmp/repositories/questdb/target/bom.json" should contain "pkg:maven/com.google.code.gson/gson@2.8.8?type=jar"
+    And the CycloneDX file "tmp/repositories/questdb/target/bom.json" should contain "pkg:maven/com.google.code.gson/gson@2.9.0?type=jar"
     And running git status should not report any modifications for "tmp/repositories/questdb"
 
   Scenario: A multi-module project located in a sub-directory
@@ -42,7 +42,7 @@ Feature: `process-manifest` command
     When I run `freshli-agent-java process-manifest tmp/repositories/protobuf/java/pom.xml 2022-08-23T19:45:55Z`
     Then it should pass with exactly:
     """
-    java/target/bom.json
+    tmp/repositories/protobuf/java/target/bom.json
     """
     And the CycloneDX file "tmp/repositories/protobuf/java/target/bom.json" should be valid
     And running git status should not report any modifications for "tmp/repositories/protobuf"

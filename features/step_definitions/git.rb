@@ -22,8 +22,9 @@ Given('I clone the git repository {string} with the sha {string}') do |repositor
 end
 
 Then('running git status should not report any modifications for {string}') do |git_repository_path|
-  system("git add .", chdir: git_repository_path, out: '/dev/null', err: '/dev/null')
-  unless system('git diff-index --quiet HEAD --', chdir: git_repository_path, out: '/dev/null', err: '/dev/null')
+  git_repository_path_in_working_directory = "#{Aruba.config.working_directory}/#{git_repository_path}"
+  system('git update-index --refresh', chdir: git_repository_path_in_working_directory, out: '/dev/null', err: '/dev/null')
+  unless system('git diff-index --quiet HEAD --', chdir: git_repository_path_in_working_directory, out: '/dev/null', err: '/dev/null')
     raise "The working directory is not clean: #{git_repository_path}"
   end
 end
