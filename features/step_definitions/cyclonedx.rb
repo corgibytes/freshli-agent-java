@@ -1,5 +1,6 @@
 Then('the CycloneDX file {string} should be valid') do |bom_path|
-  unless system("cyclonedx validate --fail-on-errors --input-file #{Aruba.config.working_directory}/#{bom_path}", out: '/dev/null', err: '/dev/null')
+  unless system("cyclonedx validate --fail-on-errors --input-file #{Aruba.config.working_directory}/#{bom_path}",
+                out: '/dev/null', err: '/dev/null')
     raise "CycloneDX file is not valid: #{bom_path}"
   end
 end
@@ -13,7 +14,5 @@ Then('the CycloneDX file {string} should contain {string}') do |bom_path, packag
       break
     end
   end
-  unless was_package_url_found
-    raise "Unable to find #{package_url} in #{bom_path}"
-  end
+  raise "Unable to find #{package_url} in #{bom_path}" unless was_package_url_found
 end
