@@ -20,9 +20,9 @@ end
 
 def write_buffered_output_to_correct_stream(buffer, stream, stdout, stderr)
   if stream == stdout
-    buffer.split("\n").each { |line| puts line }
+    $stdout.print(buffer)
   elsif stream == stderr
-    buffer.split("\n").each { |line| warn line }
+    $stderr.print(buffer)
   end
 end
 
