@@ -29,8 +29,14 @@ end
 def fill_buffer_from_stream(stream, buffer)
   # loop through reading data until there is an EOF (value is nil)
   # or there is no more data to read (value is empty)
-  result = stream.read_nonblock(4096, buffer, exception: false)
-  result = stream.read_nonblock(4096, buffer, exception: false) while safe_to_read?(result)
+  result = nil
+  loop do
+    local_buffer = ''.dup
+    result = stream.read_nonblock(4096, local_buffer, exception: false)
+    buffer << local_buffer
+
+    break unless safe_to_read?(result) && buffer.length < 4096
+  end
   result
 end
 
