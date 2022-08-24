@@ -26,10 +26,11 @@ def write_buffered_output_to_correct_stream(buffer, stream, stdout, stderr)
   end
 end
 
+BUFFER_LEN = 128
+
 def fill_buffer_from_stream(stream, buffer)
   # loop through reading data until there is an EOF (value is nil)
   # or there is no more data to read (value is empty)
-  BUFFER_LEN = 128
   result = nil
   loop do
     local_buffer = ''.dup
