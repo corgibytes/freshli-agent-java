@@ -109,13 +109,14 @@ class ProcessManifest: CliktCommand(help="Processes manifest files in the specif
 
         val manifestDirectory = manifestFile.toPath().parent
 
-        resolveVersionRanges(manifestDirectory)
-        generateBillOfMaterials(manifestDirectory)
+        runBlocking {
+            resolveVersionRanges(manifestDirectory)
+            generateBillOfMaterials(manifestDirectory)
+        }
         restoreManifestFromBackup(manifestDirectory, manifestFile)
 
         val bomFile = manifestDirectory.resolve("target").resolve("bom.json")
         if (bomFile.exists()) {
-            println("Generated file:")
             println(bomFile.toFile().path)
         } else {
             println("Failed to process manifest: $manifestLocation")
@@ -131,58 +132,44 @@ class ProcessManifest: CliktCommand(help="Processes manifest files in the specif
         }
     }
 
-    private fun generateBillOfMaterials(manifestDirectory: Path) {
+    private suspend fun generateBillOfMaterials(manifestDirectory: Path) {
         // mvn org.cyclonedx:cyclonedx-maven-plugin:makeAggregateBom -DincludeLicenseText=true -DincludeTestScope=true -DoutputFormat=json
-        var failureDetected = false
-        runBlocking {
-            val result = process(
-                "mvn",
-                "org.cyclonedx:cyclonedx-maven-plugin:makeAggregateBom",
-                "-DincludeLicenseText=true",
-                "-DincludeTestScope=true",
-                "-DoutputFormat=json",
+        val result = process(
+            "mvn",
+            "org.cyclonedx:cyclonedx-maven-plugin:makeAggregateBom",
+            "-DincludeLicenseText=true",
+            "-DincludeTestScope=true",
+            "-DoutputFormat=json",
 
-                stdout = Redirect.CAPTURE,
-                stderr = Redirect.CAPTURE,
+            stdout = Redirect.CAPTURE,
+            stderr = Redirect.CAPTURE,
 
-                directory = manifestDirectory.toFile()
-            )
+            directory = manifestDirectory.toFile()
+        )
 
-            if (result.resultCode != 0) {
-                println(result.output.joinToString("\n"))
-                failureDetected = true
-            }
-        }
-
-        if (failureDetected) {
-            println("Failed to resolve version ranges. See command output for more information.")
+        if (result.resultCode != 0) {
+            println("Failed to resolve version ranges. See command output for more information:")
+            println(result.output.joinToString("\n"))
             throw ProgramResult(-1)
         }
     }
 
-    private fun resolveVersionRanges(manifestDirectory: Path) {
-        var failureDetected = false
+    private suspend fun resolveVersionRanges(manifestDirectory: Path) {
         // mvn com.corgibytes:versions-maven-plugin:resolve-ranges-historical -DversionsAsOf="2021-01-01T00:00:00Z"
-        runBlocking {
-            val result = process(
-                "mvn",
-                "com.corgibytes:versions-maven-plugin:resolve-ranges-historical",
-                "-DversionsAsOf=$asOfDate",
+        val result = process(
+            "mvn",
+            "com.corgibytes:versions-maven-plugin:resolve-ranges-historical",
+            "-DversionsAsOf=$asOfDate",
 
-                stdout = Redirect.CAPTURE,
-                stderr = Redirect.CAPTURE,
+            stdout = Redirect.CAPTURE,
+            stderr = Redirect.CAPTURE,
 
-                directory = manifestDirectory.toFile()
-            )
+            directory = manifestDirectory.toFile()
+        )
 
-            if (result.resultCode != 0) {
-                println(result.output.joinToString("\n"))
-                failureDetected = true
-            }
-        }
-
-        if (failureDetected) {
-            println("Failed to resolve version ranges. See command output for more information.")
+        if (result.resultCode != 0) {
+            println("Failed to resolve version ranges. See command output for more information:")
+            println(result.output.joinToString("\n"))
             throw ProgramResult(-1)
         }
     }
