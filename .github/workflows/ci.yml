@@ -37,6 +37,8 @@ jobs:
           curl -LO https://github.com/CycloneDX/cyclonedx-cli/releases/download/v0.24.0/cyclonedx-linux-x64
           chmod a+x cyclonedx-linux-x64
           mv cyclonedx-linux-x64 cyclonedx
+          echo "$GITHUB_WORKSPACE/bin" >> $GITHUB_PATH
+        
 
       - name: "[Lint] - run linters"
         run: |
