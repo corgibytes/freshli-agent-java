@@ -147,8 +147,8 @@ class ProcessManifest: CliktCommand(help="Processes manifest files in the specif
                 "-DincludeTestScope=true",
                 "-DoutputFormat=json",
 
-                stdout = Redirect.CAPTURE,
-                stderr = Redirect.CAPTURE,
+//                stdout = Redirect.CAPTURE,
+//                stderr = Redirect.CAPTURE,
 
                 directory = manifestDirectory.toFile()
             )
@@ -176,8 +176,8 @@ class ProcessManifest: CliktCommand(help="Processes manifest files in the specif
                 "com.corgibytes:versions-maven-plugin:resolve-ranges-historical",
                 "-DversionsAsOf=$asOfDate",
 
-                stdout = Redirect.CAPTURE,
-                stderr = Redirect.CAPTURE,
+//                stdout = Redirect.CAPTURE,
+//                stderr = Redirect.CAPTURE,
 
                 directory = manifestDirectory.toFile()
             )
