@@ -47,7 +47,7 @@ jobs:
       - name: "[Build] - run build"
         run: |
           ./bin/build.rb
-          
+
       - name: "[Test] - run all tests"
         run: |
           ./bin/test.rb --skip-build
