@@ -154,7 +154,7 @@ class ProcessManifest: CliktCommand(help="Processes manifest files in the specif
             )
 
             if (result.resultCode != 0) {
-                result.output.forEach { println(it) }
+                println(result.output.joinToString("\n"))
                 failureDetected = true
             }
         }
@@ -183,7 +183,7 @@ class ProcessManifest: CliktCommand(help="Processes manifest files in the specif
             )
 
             if (result.resultCode != 0) {
-                result.output.forEach { println(it) }
+                println(result.output.joinToString("\n"))
                 failureDetected = true
             }
         }
