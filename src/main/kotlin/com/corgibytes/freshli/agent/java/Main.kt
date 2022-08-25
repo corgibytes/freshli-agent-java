@@ -100,7 +100,6 @@ class ProcessManifest: CliktCommand(help="Processes manifest files in the specif
     private val asOfDate by argument(name="AS_OF_DATE")
 
     override fun run() {
-        println("start")
         val manifestFile = File(manifestLocation)
 
         if (!manifestFile.exists()) {
@@ -122,21 +121,17 @@ class ProcessManifest: CliktCommand(help="Processes manifest files in the specif
             println("Failed to process manifest: $manifestLocation")
             throw ProgramResult(-1)
         }
-        println("stop")
     }
 
     private fun restoreManifestFromBackup(manifestDirectory: Path, manifestFile: File) {
-        println("restoreManifestFromBackup start")
         val backupManifestFile = manifestDirectory.resolve("pom.xml.versionsBackup")
         if (backupManifestFile.exists()) {
             manifestFile.delete()
             backupManifestFile.toFile().renameTo(manifestFile)
         }
-        println("restoreManifestFromBackup stop")
     }
 
     private fun generateBillOfMaterials(manifestDirectory: Path) {
-        println("generateBillOfMaterials start")
         // mvn org.cyclonedx:cyclonedx-maven-plugin:makeAggregateBom -DincludeLicenseText=true -DincludeTestScope=true -DoutputFormat=json
         var failureDetected = false
         runBlocking {
@@ -163,11 +158,9 @@ class ProcessManifest: CliktCommand(help="Processes manifest files in the specif
             println("Failed to resolve version ranges. See command output for more information.")
             throw ProgramResult(-1)
         }
-        println("generateBillOfMaterials stop")
     }
 
     private fun resolveVersionRanges(manifestDirectory: Path) {
-        println("resolveVersionRanges start")
         var failureDetected = false
         // mvn com.corgibytes:versions-maven-plugin:resolve-ranges-historical -DversionsAsOf="2021-01-01T00:00:00Z"
         runBlocking {
@@ -192,7 +185,6 @@ class ProcessManifest: CliktCommand(help="Processes manifest files in the specif
             println("Failed to resolve version ranges. See command output for more information.")
             throw ProgramResult(-1)
         }
-        println("resolveVersionRanges stop")
     }
 }
 
