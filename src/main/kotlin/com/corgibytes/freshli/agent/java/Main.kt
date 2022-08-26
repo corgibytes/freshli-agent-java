@@ -62,7 +62,12 @@ class RetrieveReleaseHistory: CliktCommand(help="Retrieves release history for a
 }
 
 class ValidatingRepositories: CliktCommand(help="Lists repositories that can be used to validate this agent") {
-    override fun run() = Unit
+    override fun run() {
+        println("https://github.com/corgibytes/freshli-fixture-java-maven-version-range")
+        println("https://github.com/questdb/questdb")
+        println("https://github.com/protocolbuffers/protobuf")
+        println("https://github.com/serverless/serverless")
+    }
 }
 
 class DetectManifests: CliktCommand(help="Detects manifest files in the specified directory") {
