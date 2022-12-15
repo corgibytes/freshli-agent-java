@@ -12,5 +12,9 @@ class SystemUtils {
                 }
                 return "mvn"
             }
+
+        fun normalizeFileSeparators(value: String): String {
+            return value.replace("/", File.separator)
+        }
     }
 }

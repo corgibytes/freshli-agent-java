@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'rubygems'
 require 'aruba/cucumber'
 
 Aruba.configure do |config|
@@ -14,5 +15,10 @@ end
 module Platform
   def self.null_output_target
     Gem.win_platform? ? 'NUL:' : '/dev/null'
+  end
+
+  def self.normalize_file_separators(value)
+    separator = File::ALT_SEPARATOR || File::SEPARATOR
+    value.gsub('/', separator)
   end
 end
