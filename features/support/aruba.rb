@@ -9,9 +9,10 @@ Aruba.configure do |config|
   # Use aruba working directory
   config.home_directory = File.join(config.root_directory, config.working_directory)
   # include the `freshli-agent-java` run scripts from the build directory in the path
-  config.command_search_paths << File.expand_path('../../../build/install/freshli-agent-java/bin', __FILE__)
+  config.command_search_paths << File.expand_path('../../build/install/freshli-agent-java/bin', __dir__)
 end
 
+# Contains helper methods for coping with platform specific differences
 module Platform
   def self.null_output_target
     Gem.win_platform? ? 'NUL:' : '/dev/null'
