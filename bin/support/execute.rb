@@ -84,3 +84,7 @@ def execute(command)
   end
   exit_status
 end
+
+def null_output_target
+  Gem.win_platform? ? 'NUL:' : '/dev/null'
+end
