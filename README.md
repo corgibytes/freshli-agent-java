@@ -18,8 +18,17 @@ docker build -t freshli-agent-java .
 
 Assuming you have a recent version of Ruby installed, and you're able to install RubyGems with being logged in as root, then you can use the `bin/build.rb` script to build the application.
 
+> :warning: **Note for Windows Users**
+> Ruby version 3.1 might not work, because of compatibility issues with one of the libraries that is used by the Cucumber/Aruba testing tool. All Ruby 3.0 versions are suspected to work. Testing has been done with the version of ruby that can be installed via `winget install RubyInstallerTeam.RubyWithDevKit.3.0`. Please create an issue if you see errors when running the build or the tests using the scripts in the `bin` directory or when running `bundle exec cucumber`.
+
+On macOS or Linux:
 ```bash
 bin/build.rb
+```
+
+On Windows:
+```pwsh
+ruby .\bin\build.rb
 ```
 
 #### Using Gradle
@@ -28,11 +37,17 @@ Make sure you have JDK version 17 or later installed and have your `JAVA_HOME` e
 
 Run the following command to create a complete deployable distribution for the project.
 
+On macOS or Linux:
 ```bash
-./gradle installDist
+./gradlew installDist
 ```
 
-This will create `build/install/freshli-agent-java`. Inside the `bin` directory contain within are wrappers for running the application.
+On Windows:
+```pwsh
+.\gradlew.bat installDist
+```
+
+This will create `build/install/freshli-agent-java`. Within that folder, the `bin` directory contains wrappers for running the application. Adding the full path to that `bin` directory to the `PATH` environment variable will enable you to run `freshli-agent-java` from any directory.
 
 ## Running
 
@@ -50,42 +65,62 @@ docker run freshli-agent-java --help
 
 It's possible to instruct Gradle to run the command for you.
 
+On macOS and Linux:
 ```bash
 ./gradle run --args="--help"
+```
+
+On Windows:
+```pwsh
+`.\gradlew.bat run --args="--help"
 ```
 
 #### Running from Distribution Directory
 
 You can run the program from the distribution that's created by the `installDist` Gradle task.
 
+On macOS and Linux:
 ```bash
-./build/install/freshli-agent-java/bin/freshli-agent-java --help
+./build/install/freshli-agent-java/bin/freshli-agent-java.bat --help
 ```
 
-#### Using symbolic link in `exe` directory
-
-`./gradlew installDist` (which is also run by `bin/build.rb`) creates a symbolic link in the `exe` directory to assist with running the application. The symbolic link points to the directory in the distribution directory as described above.
-
-```bash
-exe/freshli-agent-java --help
+On Windows:
+```pwsh
+.\build\install\freshli-agent-java\bin\freshli-agent-java --help
 ```
 
 ### Running Tests
 
+#### Dependencies
+
+The [`cyclonedx` CLI](https://github.com/CycloneDX/cyclonedx-cli) command needs to be in your `PATH` for the tests to pass. You'll need to [download](https://github.com/CycloneDX/cyclonedx-cli/releases) the version of the command that matches your platform, and rename it to `cyclonedx` before placing its directory in the `PATH` environment variable. 
+
 #### Using `bin/test.rb`
 
-You can run both the application's unit tests that are written in Kotlin and the application's acceptance tests that are written using Cucumber and Aruba by running:
+You can run both the application's unit and integration tests that are written in Kotlin and the application's acceptance tests that are written using Cucumber and Aruba by running:
 
+On macOS and Linux:
 ```bash
 bin/test.rb
+```
+
+On Windows:
+```pwsh
+ruby .\bin\test.rb
 ```
 
 #### Running Directly
 
 The application's unit tests can be run with:
 
+On macOS and Linux:
 ```bash
 ./gradlew test
+```
+
+On Windows:
+```pwsh
+.\gradlew.bat test
 ```
 
 And the application's acceptance tests can be run with:
