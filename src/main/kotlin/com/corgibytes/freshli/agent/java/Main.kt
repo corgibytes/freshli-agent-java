@@ -139,7 +139,7 @@ class ProcessManifest: CliktCommand(help="Processes manifest files in the specif
 
     private suspend fun generateBillOfMaterials(manifestDirectory: Path) {
         val result = process(
-            "mvn",
+            SystemUtils.mavenCommand,
             "org.cyclonedx:cyclonedx-maven-plugin:makeAggregateBom",
             "-DincludeLicenseText=true",
             "-DincludeTestScope=true",
@@ -160,7 +160,7 @@ class ProcessManifest: CliktCommand(help="Processes manifest files in the specif
 
     private suspend fun resolveVersionRanges(manifestDirectory: Path) {
         val result = process(
-            "mvn",
+            SystemUtils.mavenCommand,
             "com.corgibytes:versions-maven-plugin:resolve-ranges-historical",
             "-DversionsAsOf=$asOfDate",
 
