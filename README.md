@@ -1,6 +1,6 @@
 # Freshli Agent: Java
 
-This application is used by the [`freshli` CLI](https://github.com/corgibytes/freshli-cli) to detect and process manifest files from the Java ecosystem.
+This application is used by the [`freshli` CLI](https://github.com/corgibytes/freshli-cli) to detect and process manifest files from the Java ecosystem. It runs on Java 8 or newer, and is tested against Java 8, 11, and 17 on both Windows and Linux.
 
 ## Building
 
