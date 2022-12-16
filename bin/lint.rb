@@ -40,7 +40,7 @@ end
 linter_failed = false
 
 if perform_rubocop
-  status = execute('bundle check > /dev/null')
+  status = execute("bundle check > #{null_output_target}")
   status = execute('bundle install') unless status.success?
 
   status = execute('bundle exec rubocop --color') if status.success?

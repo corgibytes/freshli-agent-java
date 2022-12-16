@@ -9,7 +9,13 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-20.04
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        java-version: [ '8', '11', '17' ]
+
+    runs-on: ${{ matrix.os }}
     env:
       BUILD_ARTIFACTS_FOLDER: build_artifacts
 
@@ -23,12 +29,12 @@ jobs:
         uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
-          java-version: '17'
+          java-version: ${{ matrix.java-version }}
 
       - name: "[Setup] - Install Ruby"
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 3.1 # Not needed with a .ruby-version file
+          ruby-version: 3.0 # Not needed with a .ruby-version file
           bundler-cache: true
 
       - name: "[Setup] - Install CycloneDX CLI"

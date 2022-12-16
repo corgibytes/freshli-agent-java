@@ -12,7 +12,7 @@ Feature: `process-manifest` command
 
     Given I clone the git repository "https://github.com/corgibytes/freshli-fixture-java-maven-version-range" with the sha "2260b7cc3b7ae2b0ff80c818a8ec70ae82cd14ec"
     When I run `freshli-agent-java process-manifest tmp/repositories/freshli-fixture-java-maven-version-range/pom.xml 2021-01-01T00:00:00Z`
-    Then it should pass with exactly:
+    Then it should pass with exact output containing file paths:
     """
     tmp/repositories/freshli-fixture-java-maven-version-range/target/bom.json
     """
@@ -27,12 +27,12 @@ Feature: `process-manifest` command
 
     Given I clone the git repository "https://github.com/questdb/questdb" with the sha "0b465538639e24850e3471bdb0a234c20d8af58b"
     When I run `freshli-agent-java process-manifest tmp/repositories/questdb/pom.xml 2022-08-23T19:45:55Z`
-    Then it should pass with exactly:
+    Then it should pass with exact output containing file paths:
     """
     tmp/repositories/questdb/target/bom.json
     """
     And the CycloneDX file "tmp/repositories/questdb/target/bom.json" should be valid
-    And the CycloneDX file "tmp/repositories/questdb/target/bom.json" should contain "pkg:maven/org.jetbrains/annotations@17.0.0?type=jar"
+    And the CycloneDX file "tmp/repositories/questdb/target/bom.json" should contain "pkg:maven/org.slf4j/slf4j-api@1.7.7?type=jar"
     And the CycloneDX file "tmp/repositories/questdb/target/bom.json" should contain "pkg:maven/com.chrisnewland/jitwatch@1.0.0?type=jar"
     And the CycloneDX file "tmp/repositories/questdb/target/bom.json" should contain "pkg:maven/com.google.code.gson/gson@2.9.0?type=jar"
     And running git status should not report any modifications for "tmp/repositories/questdb"
@@ -40,7 +40,7 @@ Feature: `process-manifest` command
   Scenario: A multi-module project located in a sub-directory
     Given I clone the git repository "https://github.com/protocolbuffers/protobuf" with the sha "d8421bd49c1328dc5bcaea2e60dd6577ac235336"
     When I run `freshli-agent-java process-manifest tmp/repositories/protobuf/java/pom.xml 2022-08-23T19:45:55Z`
-    Then it should pass with exactly:
+    Then it should pass with exact output containing file paths:
     """
     tmp/repositories/protobuf/java/target/bom.json
     """

@@ -80,8 +80,9 @@ class DetectManifests: CliktCommand(help="Detects manifest files in the specifie
     private val path by argument()
 
     override fun run() {
+        val normalizedPath = SystemUtils.normalizeFileSeparators(path)
         val submodules = mutableListOf<String>()
-        val directory = File(path)
+        val directory = File(normalizedPath)
         val results = directory.walkTopDown().filter { it.name == "pom.xml" }.map { it.path }.toMutableList()
 
         val mavenReader = MavenXpp3Reader()
@@ -94,7 +95,7 @@ class DetectManifests: CliktCommand(help="Detects manifest files in the specifie
 
         results.removeIf { submodules.contains(it) }
 
-        results.map{ it.removePrefix("$path/") }.sorted().forEach {
+        results.map{ it.removePrefix("$normalizedPath" + File.separator) }.sorted().forEach {
             println(it)
         }
     }
@@ -105,7 +106,7 @@ class ProcessManifest: CliktCommand(help="Processes manifest files in the specif
     private val asOfDate by argument(name="AS_OF_DATE")
 
     override fun run() {
-        val manifestFile = File(manifestLocation)
+        val manifestFile = File(SystemUtils.normalizeFileSeparators(manifestLocation))
 
         if (!manifestFile.exists()) {
             println("Unable to access $manifestLocation")
@@ -139,7 +140,7 @@ class ProcessManifest: CliktCommand(help="Processes manifest files in the specif
 
     private suspend fun generateBillOfMaterials(manifestDirectory: Path) {
         val result = process(
-            "mvn",
+            SystemUtils.mavenCommand,
             "org.cyclonedx:cyclonedx-maven-plugin:makeAggregateBom",
             "-DincludeLicenseText=true",
             "-DincludeTestScope=true",
@@ -160,7 +161,7 @@ class ProcessManifest: CliktCommand(help="Processes manifest files in the specif
 
     private suspend fun resolveVersionRanges(manifestDirectory: Path) {
         val result = process(
-            "mvn",
+            SystemUtils.mavenCommand,
             "com.corgibytes:versions-maven-plugin:resolve-ranges-historical",
             "-DversionsAsOf=$asOfDate",
 

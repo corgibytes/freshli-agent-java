@@ -1,14 +1,16 @@
 # frozen_string_literal: true
 
 Then('the CycloneDX file {string} should be valid') do |bom_path|
-  unless system("cyclonedx validate --fail-on-errors --input-file #{Aruba.config.working_directory}/#{bom_path}",
-                out: '/dev/null', err: '/dev/null')
+  full_bom_path = Platform.normalize_file_separators("#{Aruba.config.working_directory}/#{bom_path}")
+  unless system("cyclonedx validate --fail-on-errors --input-file #{full_bom_path}",
+                out: Platform.null_output_target, err: Platform.null_output_target)
     raise "CycloneDX file is not valid: #{bom_path}"
   end
 end
 
 Then('the CycloneDX file {string} should contain {string}') do |bom_path, package_url|
-  bom_file_lines = File.readlines("#{Aruba.config.working_directory}/#{bom_path}")
+  full_bom_path = Platform.normalize_file_separators("#{Aruba.config.working_directory}/#{bom_path}")
+  bom_file_lines = File.readlines(full_bom_path)
   was_package_url_found = false
   bom_file_lines.each do |line|
     if line.include?(package_url)

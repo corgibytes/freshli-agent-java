@@ -16,7 +16,7 @@ Feature: `detect-manifests` command
 
     Given I clone the git repository "https://github.com/questdb/questdb" with the sha "0b465538639e24850e3471bdb0a234c20d8af58b"
     When I run `freshli-agent-java detect-manifests tmp/repositories/questdb`
-    Then it should pass with exactly:
+    Then it should pass with exact output containing file paths:
     """
     pom.xml
     """
@@ -28,7 +28,7 @@ Feature: `detect-manifests` command
 
     Given I clone the git repository "https://github.com/protocolbuffers/protobuf" with the sha "d8421bd49c1328dc5bcaea2e60dd6577ac235336"
     When I run `freshli-agent-java detect-manifests tmp/repositories/protobuf`
-    Then it should pass with exactly:
+    Then it should pass with exact output containing file paths:
     """
     java/pom.xml
     java/protoc/pom.xml
@@ -42,7 +42,7 @@ Feature: `detect-manifests` command
 
     Given I clone the git repository "https://github.com/serverless/serverless" with the sha "9c2ebb78d8db30acde24bd31efa1d6516d177b0e"
     When I run `freshli-agent-java detect-manifests tmp/repositories/serverless`
-    Then it should pass with exactly:
+    Then it should pass with exact output containing file paths:
     """
     docs/providers/openwhisk/examples/hello-world/java/pom.xml
     lib/plugins/aws/invoke-local/runtime-wrappers/java/pom.xml

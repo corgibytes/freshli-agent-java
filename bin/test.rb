@@ -42,7 +42,7 @@ end
 status = execute("ruby #{File.dirname(__FILE__)}/build.rb") if perform_build
 
 if status.nil? || status.success?
-  status = execute('bundle check > /dev/null')
+  status = execute("bundle check > #{null_output_target}")
   status = execute('bundle install') unless status.success?
 
   status = execute('./gradlew test') if status.success?
