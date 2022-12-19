@@ -18,7 +18,7 @@ dependencies {
     implementation("com.github.package-url:packageurl-java:1.4.1")
     implementation("org.apache.maven:maven-model:3.8.6")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
-    implementation("com.github.pgreze:kotlin-process:1.4")
+    implementation("com.github.pgreze:kotlin-process:1.4.1")
 
     testImplementation(kotlin("test"))
 }
