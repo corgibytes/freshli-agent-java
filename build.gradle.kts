@@ -1,15 +1,37 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.apache.tools.ant.taskdefs.condition.Os
+
+group = "com.corgibytes"
+
+buildscript {
+    repositories {
+        mavenLocal() // for local testing of shipkit
+        gradlePluginPortal()
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.shipkit:shipkit-auto-version:1.+")
+        classpath("org.shipkit:shipkit-changelog:1.+")
+    }
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+extensions.findByName("buildScan")?.withGroovyBuilder {
+    setProperty("termsOfServiceUrl", "https://gradle.com/terms-of-service")
+    setProperty("termsOfServiceAgree", "yes")
+}
+
+apply("gradle/release.gradle")
+apply("gradle/ide.gradle")
 
 plugins {
     kotlin("jvm") version "1.7.22"
+    id("org.beryx.runtime") version "1.12.7"
     application
-}
-
-group = "com.corgibytes"
-version = "1.0-SNAPSHOT"
-
-repositories {
-    mavenCentral()
 }
 
 dependencies {
@@ -28,9 +50,24 @@ tasks.test {
 }
 
 tasks.withType<KotlinCompile> {
-    kotlinOptions.jvmTarget = "1.8"
+    kotlinOptions.jvmTarget = "17"
 }
 
 application {
     mainClass.set("com.corgibytes.freshli.agent.java.MainKt")
+}
+
+runtime {
+    options.set(listOf("--strip-debug", "--compress", "2", "--no-header-files", "--no-man-pages"))
+    modules.set(listOf(
+        "java.base",
+        "java.xml",
+        "jdk.crypto.ec"
+    ))
+
+    jpackage {
+        if (!Os.isFamily(Os.FAMILY_WINDOWS)) {
+            imageOptions = listOf("--win-console")
+        }
+    }
 }

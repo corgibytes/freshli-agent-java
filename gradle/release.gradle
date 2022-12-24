@@ -1,0 +1,20 @@
+// Based on: https://github.com/shipkit/shipkit-demo/blob/f604dbf393f9549cc78c7c57b05dc69f9c7ab0fc/gradle/release.gradle
+
+//Plugin jars are added to the buildscript classpath in the root build.gradle file
+apply plugin: "org.shipkit.shipkit-auto-version"
+
+apply plugin: "org.shipkit.shipkit-changelog"
+tasks.named("generateChangelog") {
+    previousRevision = project.ext.'shipkit-auto-version.previous-tag'
+    githubToken = System.getenv("GITHUB_TOKEN")
+    repository = "corgibytes/dependency-history-maven"
+}
+
+apply plugin: "org.shipkit.shipkit-github-release"
+tasks.named("githubRelease") {
+    dependsOn tasks.named("generateChangelog")
+    repository = "corgibytes/dependency-history-maven"
+    changelog = tasks.named("generateChangelog").get().outputFile
+    githubToken = System.getenv("GITHUB_TOKEN")
+    newTagRevision = System.getenv("GITHUB_SHA")
+}

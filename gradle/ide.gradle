@@ -1,0 +1,8 @@
+// Based on: https://github.com/shipkit/shipkit-demo/blob/f604dbf393f9549cc78c7c57b05dc69f9c7ab0fc/gradle/ide.gradle
+assert rootProject == project
+
+allprojects {
+    apply plugin: 'idea'
+}
+
+idea.project.vcs = 'Git'

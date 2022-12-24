@@ -33,21 +33,21 @@ ruby .\bin\build.rb
 
 #### Using Gradle
 
-Make sure you have JDK version 17 or later installed and have your `JAVA_HOME` environment varibale set appropriately.
+Make sure you have JDK version 17 or later installed and have your `JAVA_HOME` environment variable set appropriately.
 
 Run the following command to create a complete deployable distribution for the project.
 
 On macOS or Linux:
 ```bash
-./gradlew installDist
+./gradlew jpackageImage
 ```
 
 On Windows:
 ```pwsh
-.\gradlew.bat installDist
+.\gradlew.bat jpackageImage
 ```
 
-This will create `build/install/freshli-agent-java`. Within that folder, the `bin` directory contains wrappers for running the application. Adding the full path to that `bin` directory to the `PATH` environment variable will enable you to run `freshli-agent-java` from any directory.
+This will create `build/jpackage/freshli-agent-java`. Adding that directory to the `PATH` environment variable will enable you to run `freshli-agent-java` from outside of that directory.
 
 ## Running
 
@@ -75,18 +75,18 @@ On Windows:
 `.\gradlew.bat run --args="--help"
 ```
 
-#### Running from Distribution Directory
+#### Running from build image directory
 
-You can run the program from the distribution that's created by the `installDist` Gradle task.
+You can run the program from the directory that's created by the `jpackgaeImage` Gradle task.
 
 On macOS and Linux:
 ```bash
-./build/install/freshli-agent-java/bin/freshli-agent-java.bat --help
+./build/jpackage/freshli-agent-java/freshli-agent-java --help
 ```
 
 On Windows:
 ```pwsh
-.\build\install\freshli-agent-java\bin\freshli-agent-java --help
+.\build\jpackage\freshli-agent-java\freshli-agent-java.exe --help
 ```
 
 ### Running Tests

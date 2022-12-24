@@ -7,6 +7,6 @@ require_relative './support/execute'
 
 enable_dotnet_command_colors
 
-status = execute('./gradlew installDist')
+status = execute('./gradlew jpackageImage')
 
 exit(status.exitstatus)
