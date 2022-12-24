@@ -12,8 +12,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, windows-latest]
-        java-version: [ '8', '11', '17' ]
+        os: [ubuntu-latest, macos-latest, windows-latest]
 
     runs-on: ${{ matrix.os }}
     env:
@@ -29,7 +28,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
-          java-version: ${{ matrix.java-version }}
+          java-version: '17'
 
       - name: "[Setup] - Install Ruby"
         uses: ruby/setup-ruby@v1
@@ -44,7 +43,6 @@ jobs:
           chmod a+x cyclonedx-linux-x64
           mv cyclonedx-linux-x64 cyclonedx
           echo "$GITHUB_WORKSPACE/bin" >> $GITHUB_PATH
-        
 
       - name: "[Lint] - run linters"
         run: |
