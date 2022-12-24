@@ -32,7 +32,7 @@ Feature: `process-manifest` command
     tmp/repositories/questdb/target/bom.json
     """
     And the CycloneDX file "tmp/repositories/questdb/target/bom.json" should be valid
-    And the CycloneDX file "tmp/repositories/questdb/target/bom.json" should contain "pkg:maven/org.jetbrains/annotations@17.0.0?type=jar"
+    And the CycloneDX file "tmp/repositories/questdb/target/bom.json" should contain "pkg:maven/org.slf4j/slf4j-api@1.7.7?type=jar"
     And the CycloneDX file "tmp/repositories/questdb/target/bom.json" should contain "pkg:maven/com.chrisnewland/jitwatch@1.0.0?type=jar"
     And the CycloneDX file "tmp/repositories/questdb/target/bom.json" should contain "pkg:maven/com.google.code.gson/gson@2.9.0?type=jar"
     And running git status should not report any modifications for "tmp/repositories/questdb"

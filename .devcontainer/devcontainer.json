@@ -1,0 +1,46 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the
+// README at: https://github.com/devcontainers/templates/tree/main/src/java-8
+{
+	"name": "Java",
+	"build": {
+		"dockerfile": "Dockerfile"
+	},
+	"features": {
+		"ghcr.io/devcontainers/features/java:1": {
+			// "version": "8.0.352-tem", // Java 8 Temurin
+			// "version": "11.0.17-tem", // Java 11 Temurin
+			"version": "17.0.5-tem", // Java 17 Temurin
+			"installMaven": "true",
+			"installGradle": "true"
+		}
+	},
+
+	// Configure tool-specific properties.
+	"customizations": {
+		// Configure properties specific to VS Code.
+		"vscode": {
+			// Set *default* container specific settings.json values on container create.
+			"settings": {
+				"java.import.gradle.java.home": "/usr/local/sdkman/candidates/java/current",
+				"java.configuration.runtimes": [
+					{
+						"default": true,
+						// "name": "JavaSE-1.8", // Java 8
+						// "name": "JavaSE-11", // Java 11
+						"name": "JavaSE-17", // Java 17
+						"path": "/usr/local/sdkman/candidates/java/current"
+					}
+				]
+			}
+		}
+	}
+
+	// Use 'forwardPorts' to make a list of ports inside the container available locally.
+	// "forwardPorts": [],
+
+	// Use 'postCreateCommand' to run commands after the container is created.
+	// "postCreateCommand": "java -version",
+
+	// Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
+	// "remoteUser": "root"
+}
