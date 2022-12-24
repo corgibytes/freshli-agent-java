@@ -66,7 +66,7 @@ runtime {
     ))
 
     jpackage {
-        if (!Os.isFamily(Os.FAMILY_WINDOWS)) {
+        if (Os.isFamily(Os.FAMILY_WINDOWS)) {
             imageOptions = listOf("--win-console")
         }
     }
