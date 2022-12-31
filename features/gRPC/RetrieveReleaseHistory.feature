@@ -311,6 +311,8 @@ Feature: Invoking RetrieveReleaseHistory via gRPC
     5.3.21	2022-06-15T08:18:36Z
     5.3.22	2022-07-14T08:51:44Z
     """
+    When the gRPC service on the captured port is sent the shutdown command
+    Then there are no services running on the captured port
 
   Scenario: Valid Package URL from alternative repository that includes url scheme
     Some packages are not located in the default repository, such as the `org.springframework.spring-core` package. The
@@ -554,6 +556,8 @@ Feature: Invoking RetrieveReleaseHistory via gRPC
     5.3.21	2022-06-15T08:18:36Z
     5.3.22	2022-07-14T08:51:44Z
     """
+    When the gRPC service on the captured port is sent the shutdown command
+    Then there are no services running on the captured port
 
   Scenario: Valid Package URL for an unknown package
     If the command is unable to find any release history for the specified package, then it should output a friendly
@@ -561,6 +565,8 @@ Feature: Invoking RetrieveReleaseHistory via gRPC
 
     When I call RetrieveReleaseHistory with "pkg:maven/com.corgibytes/missing" on the captured port
     Then RetrieveReleaseHistory response should be empty
+    When the gRPC service on the captured port is sent the shutdown command
+    Then there are no services running on the captured port
 
   Scenario: Invalid Package URL
     If the command is unable parse the package url, then it should output a friendly error message and use the
@@ -568,3 +574,5 @@ Feature: Invoking RetrieveReleaseHistory via gRPC
 
     When I call RetrieveReleaseHistory with "invalid" on the captured port
     Then RetrieveReleaseHistory response should be empty
+    When the gRPC service on the captured port is sent the shutdown command
+    Then there are no services running on the captured port
