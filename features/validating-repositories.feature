@@ -1,4 +1,4 @@
-Feature: `validating-package-urls` command
+Feature: `validating-repositories` command
 
   This command is used by the `freshli agent verify` command to get a list of repository urls that are known to work
   when running against the `detect-manifests` and `process-manifest` command.

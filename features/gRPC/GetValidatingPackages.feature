@@ -8,8 +8,8 @@ Feature: Invoke GetValidatingPackages via gRPC
     And I wait for the output to contain a port number and capture it
     Then the exit status should be 0
 
-  Scenario: Output the repository urls
-    When I call GetValidatingPackages
+  Scenario: Get the repository urls
+    When I call GetValidatingPackages on the captured port
     Then the GetValidatingPackages response should contain:
     """
     pkg:maven/org.apache.maven/apache-maven
