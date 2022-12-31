@@ -24,6 +24,8 @@ Feature: Invoking ProcessManifest via gRPC
     And the CycloneDX file "tmp/repositories/freshli-fixture-java-maven-version-range/target/bom.json" should be valid
     And the CycloneDX file "tmp/repositories/freshli-fixture-java-maven-version-range/target/bom.json" should contain "pkg:maven/commons-io/commons-io@2.8.0?type=jar"
     And running git status should not report any modifications for "tmp/repositories/freshli-fixture-java-maven-version-range"
+    When the gRPC service on the captured port is sent the shutdown command
+    Then there are no services running on the captured port
 
   Scenario: Multi-module project without any version ranges
     This project contains sub-modules and the dependencies for the sub-modules need to be included in the resulting
@@ -41,6 +43,8 @@ Feature: Invoking ProcessManifest via gRPC
     And the CycloneDX file "tmp/repositories/questdb/target/bom.json" should contain "pkg:maven/com.chrisnewland/jitwatch@1.0.0?type=jar"
     And the CycloneDX file "tmp/repositories/questdb/target/bom.json" should contain "pkg:maven/com.google.code.gson/gson@2.9.0?type=jar"
     And running git status should not report any modifications for "tmp/repositories/questdb"
+    When the gRPC service on the captured port is sent the shutdown command
+    Then there are no services running on the captured port
 
   Scenario: A multi-module project located in a sub-directory
     Given I clone the git repository "https://github.com/protocolbuffers/protobuf" with the sha "d8421bd49c1328dc5bcaea2e60dd6577ac235336"
@@ -51,3 +55,5 @@ Feature: Invoking ProcessManifest via gRPC
     """
     And the CycloneDX file "tmp/repositories/protobuf/java/target/bom.json" should be valid
     And running git status should not report any modifications for "tmp/repositories/protobuf"
+    When the gRPC service on the captured port is sent the shutdown command
+    Then there are no services running on the captured port
