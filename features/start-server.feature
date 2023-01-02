@@ -16,8 +16,8 @@ Feature: `start-server` command
 
   Scenario: Starting the server with a provided port number
     Given there are no services running on port 8124
-    When I run `freshli-agent-java start-server 8124`
-    And I wait for the output to contain:
+    When I run `freshli-agent-java start-server 8124` interactively
+    And I wait for output to contain:
     """
     Listening on 8124...
     """
