@@ -49,6 +49,18 @@ tasks.withType<KotlinCompile> {
     kotlinOptions.jvmTarget = "1.8"
 }
 
+// based on https://stackoverflow.com/a/32089746/243215
+// If the line that sets the classpath gets too long, then the bat file generates an error message.
+// This works around the issue by using lib\* in the classpath.
+tasks.withType<CreateStartScripts> {
+    doLast {
+        val winScriptFile = file(windowsScript)
+        var winFileText = winScriptFile.readText()
+        winFileText = winFileText.replace(Regex("set CLASSPATH=.*"), "rem original CLASSPATH declaration replaced by:\nset CLASSPATH=%APP_HOME%\\\\lib\\\\\\*")
+        winScriptFile.writeText(winFileText)
+    }
+}
+
 application {
     mainClass.set("com.corgibytes.freshli.agent.java.MainKt")
 }
