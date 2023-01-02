@@ -48,3 +48,6 @@ gradle-app.setting
 .classpath
 
 .idea/
+
+# path where generated ruby gRPC files are stored
+features/step_definitions/grpc/

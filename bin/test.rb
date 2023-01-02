@@ -45,6 +45,9 @@ if status.nil? || status.success?
   status = execute("bundle check > #{null_output_target}")
   status = execute('bundle install') unless status.success?
 
+  status = execute('bundle exec grpc_tools_ruby_protoc -I src/main/proto --ruby_out=features/step_definitions/grpc src/main/proto/freshli_agent.proto')
+  status = execute('bundle exec grpc_tools_ruby_protoc -I src/main/proto --ruby_out=features/step_definitions/grpc src/main/proto/health.proto')
+
   status = execute('./gradlew test') if status.success?
   status = execute('bundle exec cucumber --color --backtrace') if status.success?
 end
