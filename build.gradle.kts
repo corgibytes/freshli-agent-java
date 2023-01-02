@@ -9,6 +9,8 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     kotlin("jvm") version "1.7.22"
     id("com.google.protobuf") version "0.8.18"
+    idea
+
     application
 }
 
@@ -31,14 +33,25 @@ dependencies {
     implementation("org.apache.maven:maven-model:3.8.6")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
     implementation("com.github.pgreze:kotlin-process:1.4.1")
+    runtimeOnly("org.slf4j:slf4j-simple:2.0.5")
 
     api("io.grpc:grpc-stub:$grpcVersion")
     api("io.grpc:grpc-protobuf:$grpcVersion")
+    runtimeOnly("io.grpc:grpc-netty:$grpcVersion")
     api("com.google.protobuf:protobuf-java-util:$protobufVersion")
     api("com.google.protobuf:protobuf-kotlin:$protobufVersion")
     api("io.grpc:grpc-kotlin-stub:$grpcKotlinVersion")
+    api("com.google.protobuf:protobuf-gradle-plugin:0.9.1")
 
     testImplementation(kotlin("test"))
+}
+
+sourceSets {
+    val main by getting { }
+    main.java.srcDirs("build/generated/source/proto/main/java")
+    main.java.srcDirs("build/generated/source/proto/main/grpc")
+    main.java.srcDirs("build/generated/source/proto/main/kotlin")
+    main.java.srcDirs("build/generated/source/proto/main/grpckt")
 }
 
 tasks.test {
@@ -47,6 +60,11 @@ tasks.test {
 
 tasks.withType<KotlinCompile> {
     kotlinOptions.jvmTarget = "1.8"
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
 }
 
 // based on https://stackoverflow.com/a/32089746/243215
