@@ -17,3 +17,5 @@ Feature: Invoke GetValidatingRepositories via gRPC
     https://github.com/protocolbuffers/protobuf
     https://github.com/serverless/serverless
     """
+    When the gRPC service on the captured port is sent the shutdown command
+    Then there are no services running on the captured port
