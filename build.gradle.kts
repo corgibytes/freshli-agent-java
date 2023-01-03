@@ -37,6 +37,7 @@ dependencies {
 
     api("io.grpc:grpc-stub:$grpcVersion")
     api("io.grpc:grpc-protobuf:$grpcVersion")
+    api("io.grpc:grpc-services:$grpcVersion")
     runtimeOnly("io.grpc:grpc-netty:$grpcVersion")
     api("com.google.protobuf:protobuf-java-util:$protobufVersion")
     api("com.google.protobuf:protobuf-kotlin:$protobufVersion")
