@@ -1,13 +1,21 @@
-When('I wait for the {channel} to contain:') do |channel, doc_string|
-  pending # Write code here that turns the phrase above into concrete actions
+def verify_grpc_is_running_on(port)
+  client = Grpc::Health::V1::Health::Stub.new("localhost:#{port}", :this_channel_is_insecure)
+  response = client.check(Grpc::Health::V1::HealthCheckRequest.new(service: Com::Corgibytes::Freshli::Agent::Agent::Service.service_name))
+  expect(response.status).to eq(:SERVING)
 end
 
-Then('the freshli_agent.proto gRPC service is running on port {int}') do |int|
-  pending # Write code here that turns the phrase above into concrete actions
+Then('the freshli_agent.proto gRPC service is running on port {int}') do |port|
+  verify_grpc_is_running_on(port)
 end
 
-When('the gRPC service on port {int} is sent the shutdown command') do |int|
-  pending # Write code here that turns the phrase above into concrete actions
+def send_shutdown_to_grpc_on(port)
+  client = Com::Corgibytes::Freshli::Agent::Agent::Stub.new("localhost:#{port}", :this_channel_is_insecure)
+  response = client.shutdown(::Google::Protobuf::Empty.new)
+  expect(response).to be_a(::Google::Protobuf::Empty)
+end
+
+When('the gRPC service on port {int} is sent the shutdown command') do |port|
+  send_shutdown_to_grpc_on(port)
 end
 
 def port_available?(port)
