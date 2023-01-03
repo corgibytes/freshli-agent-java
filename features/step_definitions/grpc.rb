@@ -35,12 +35,36 @@ Then('there are no services running on port {int}') do |port|
   expect(port_available?(port)).to be_truthy
 end
 
-Given('a test service is started on port {int}') do |int|
-  pending # Write code here that turns the phrase above into concrete actions
+class TestServices
+  include RSpec::Matchers
+
+  def initialize
+    @test_services = {}
+  end
+
+  def start_on(port)
+    expect(@test_services).not_to have_key(port)
+
+    socket = Socket.new(Socket::Constants::AF_INET, Socket::Constants::SOCK_STREAM, 0)
+    socket.bind(Socket.pack_sockaddr_in(port, '0.0.0.0'))
+
+    @test_services[port] = socket
+  end
+
+  def stop_on(port)
+    expect(@test_services).to have_key(port)
+
+    @test_services[port].close
+  end
+end
+test_services = TestServices.new
+
+Given('a test service is started on port {int}') do |port|
+  test_services.start_on(port)
 end
 
-When('the test service running on port {int} is stopped') do |int|
-  pending # Write code here that turns the phrase above into concrete actions
+When('the test service running on port {int} is stopped') do |port|
+  test_services.stop_on(port)
 end
 
 # based on https://github.com/cucumber/aruba/blob/dab4d104ba178a9921a81ff17b31b80a607f6622/lib/aruba/cucumber/command.rb#L88..L101
