@@ -30,14 +30,6 @@ class AgentServer(val port: Int) {
         server.awaitTermination()
     }
 
-    fun isServiceRunning(name: String): Boolean {
-        if (name.isNullOrEmpty()) {
-            return true
-        }
-
-        return server.immutableServices.firstOrNull { it.serviceDescriptor.name == name } != null
-    }
-
     internal class AgentService(private val parent: AgentServer) : AgentGrpcKt.AgentCoroutineImplBase() {
 
         override suspend fun shutdown(request: Empty): Empty {
