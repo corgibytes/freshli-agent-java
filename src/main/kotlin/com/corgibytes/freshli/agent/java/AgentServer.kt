@@ -9,7 +9,7 @@ import io.grpc.protobuf.services.HealthStatusManager
 import io.grpc.protobuf.services.ProtoReflectionService
 
 class AgentServer(val port: Int) {
-    var healthStatusManager = HealthStatusManager()
+    private val healthStatusManager = HealthStatusManager()
     val server: Server = ServerBuilder
         .forPort(port)
         .addService(AgentService(this))
