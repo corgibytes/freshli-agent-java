@@ -1,66 +1,15 @@
-def verify_grpc_is_running_on(port)
-  client = Grpc::Health::V1::Health::Stub.new("localhost:#{port}", :this_channel_is_insecure)
-  response = client.check(Grpc::Health::V1::HealthCheckRequest.new(service: Com::Corgibytes::Freshli::Agent::Agent::Service.service_name))
-  expect(response.status).to eq(:SERVING)
-end
-
 Then('the freshli_agent.proto gRPC service is running on port {int}') do |port|
-  verify_grpc_is_running_on(port)
-end
-
-def grpc_agent_client_on(port)
-  Com::Corgibytes::Freshli::Agent::Agent::Stub.new("localhost:#{port}", :this_channel_is_insecure)
-end
-
-def send_shutdown_to_grpc_on(port)
-  client = grpc_agent_client_on(port)
-  response = client.shutdown(::Google::Protobuf::Empty.new)
-  expect(response).to be_a(::Google::Protobuf::Empty)
+  GrpcClient.new(port).is_running!
 end
 
 When('the gRPC service on port {int} is sent the shutdown command') do |port|
-  send_shutdown_to_grpc_on(port)
-end
-
-def port_available?(port)
-  # based on https://stackoverflow.com/a/34375147/243215
-  require 'socket'
-  begin
-    socket = Socket.new(Socket::Constants::AF_INET, Socket::Constants::SOCK_STREAM, 0)
-    socket.bind(Socket.pack_sockaddr_in(port, '0.0.0.0'))
-    socket.close
-    true
-  rescue Errno::EADDRINUSE;
-    false
-  end
+  GrpcClient.nev(port).shutdown!
 end
 
 Then('there are no services running on port {int}') do |port|
-  expect(port_available?(port)).to be_truthy
+  expect(Ports.available?(port)).to be_truthy
 end
 
-class TestServices
-  include RSpec::Matchers
-
-  def initialize
-    @test_services = {}
-  end
-
-  def start_on(port)
-    expect(@test_services).not_to have_key(port)
-
-    socket = Socket.new(Socket::Constants::AF_INET, Socket::Constants::SOCK_STREAM, 0)
-    socket.bind(Socket.pack_sockaddr_in(port, '0.0.0.0'))
-
-    @test_services[port] = socket
-  end
-
-  def stop_on(port)
-    expect(@test_services).to have_key(port)
-
-    @test_services[port].close
-  end
-end
 test_services = TestServices.new
 
 Given('a test service is started on port {int}') do |port|
@@ -89,15 +38,15 @@ When('I wait for the output to contain a port number and capture it') do
 end
 
 Then('the freshli_agent.proto gRPC service is running on the captured port') do
-  verify_grpc_is_running_on(@captured_port)
+  GrpcClient.new(@captured_port).is_running!
 end
 
 When('the gRPC service on the captured port is sent the shutdown command') do
-  send_shutdown_to_grpc_on(@captured_port)
+  GrpcClient.new(@captured_port).shutdown!
 end
 
 Then('there are no services running on the captured port') do
-  expect(port_available?(@captured_port)).to be_truthy
+  expect(Ports.available?(@captured_port)).to be_truthy
 end
 
 Then('the captured port should be within the range {int} to {int}') do |range_start, range_end|
@@ -118,14 +67,13 @@ end
 
 Then('there are no services running on every port within the range {int} to {int}') do |range_start, range_end|
   (range_start..range_end).each do |port|
-    expect(port_available?(port)).to be_truthy
+    expect(Ports.available?(port)).to be_truthy
   end
 end
 
 When('I call DetectManifests with the full path to {string} on the captured port') do |project_path|
-  client = grpc_agent_client_on(@captured_port)
   expanded_path = Platform.normalize_file_separators(File.expand_path(File.join(aruba.config.home_directory, project_path)))
-  @detect_manifests_response = client.detect_manifests(::Com::Corgibytes::Freshli::Agent::ProjectLocation.new(path: expanded_path))
+  @detect_manifests_paths = GrpcClient.new(@captured_port).detect_manifests(expanded_path)
 end
 
 Then('the DetectManifests response contains the following file paths expanded beneath {string}:') do |project_path, doc_string|
@@ -134,10 +82,5 @@ Then('the DetectManifests response contains the following file paths expanded be
     expected_paths << Platform.normalize_file_separators(File.expand_path(File.join(aruba.config.home_directory, project_path, file_path.strip)))
   end
 
-  actual_paths = []
-  @detect_manifests_response.each do |location|
-    actual_paths << location.path
-  end
-
-  expect(actual_paths).to eq(expected_paths)
+  expect(@detect_manifests_paths).to eq(expected_paths)
 end
