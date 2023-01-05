@@ -8,8 +8,12 @@ Then('the freshli_agent.proto gRPC service is running on port {int}') do |port|
   verify_grpc_is_running_on(port)
 end
 
+def grpc_agent_client_on(port)
+  Com::Corgibytes::Freshli::Agent::Agent::Stub.new("localhost:#{port}", :this_channel_is_insecure)
+end
+
 def send_shutdown_to_grpc_on(port)
-  client = Com::Corgibytes::Freshli::Agent::Agent::Stub.new("localhost:#{port}", :this_channel_is_insecure)
+  client = grpc_agent_client_on(port)
   response = client.shutdown(::Google::Protobuf::Empty.new)
   expect(response).to be_a(::Google::Protobuf::Empty)
 end
@@ -116,4 +120,24 @@ Then('there are no services running on every port within the range {int} to {int
   (range_start..range_end).each do |port|
     expect(port_available?(port)).to be_truthy
   end
+end
+
+When('I call DetectManifests with the full path to {string} on the captured port') do |project_path|
+  client = grpc_agent_client_on(@captured_port)
+  expanded_path = Platform.normalize_file_separators(File.expand_path(File.join(aruba.config.home_directory, project_path)))
+  @detect_manifests_response = client.detect_manifests(::Com::Corgibytes::Freshli::Agent::ProjectLocation.new(path: expanded_path))
+end
+
+Then('the DetectManifests response contains the following file paths expanded beneath {string}:') do |project_path, doc_string|
+  expected_paths = []
+  doc_string.each_line do |file_path|
+    expected_paths << Platform.normalize_file_separators(File.expand_path(File.join(aruba.config.home_directory, project_path, file_path.strip)))
+  end
+
+  actual_paths = []
+  @detect_manifests_response.each do |location|
+    actual_paths << location.path
+  end
+
+  expect(actual_paths).to eq(expected_paths)
 end
