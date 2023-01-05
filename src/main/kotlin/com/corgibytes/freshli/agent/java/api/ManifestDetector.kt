@@ -5,7 +5,7 @@ import org.apache.maven.model.io.xpp3.MavenXpp3Reader
 import java.io.File
 import java.io.FileInputStream
 
-class ManifestDetector() {
+class ManifestDetector {
     fun detect(path: String): List<String> {
         val normalizedPath = SystemUtils.normalizeFileSeparators(path)
         val submodules = mutableListOf<String>()
@@ -14,9 +14,13 @@ class ManifestDetector() {
 
         val mavenReader = MavenXpp3Reader()
         results.forEach {modelFileName: String ->
-            val model = mavenReader.read(FileInputStream(modelFileName))
-            model.modules.forEach {moduleName: String ->
-                submodules.add(File(modelFileName).toPath().resolveSibling(moduleName).resolve("pom.xml").toString())
+            FileInputStream(modelFileName).use { inputStream ->
+                val model = mavenReader.read(inputStream)
+                model.modules.forEach { moduleName: String ->
+                    submodules.add(
+                        File(modelFileName).toPath().resolveSibling(moduleName).resolve("pom.xml").toString()
+                    )
+                }
             }
         }
 
