@@ -3,7 +3,7 @@ Then('the freshli_agent.proto gRPC service is running on port {int}') do |port|
 end
 
 When('the gRPC service on port {int} is sent the shutdown command') do |port|
-  GrpcClient.nev(port).shutdown!
+  GrpcClient.new(port).shutdown!
 end
 
 Then('there are no services running on port {int}') do |port|
