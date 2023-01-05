@@ -16,7 +16,7 @@ Feature: `start-server` command
 
   Scenario: Starting the server with a provided port number
     Given there are no services running on port 8124
-    When I run `freshli-agent-java start-server 8124` interactively
+    When I run `freshli-agent-java start-server --port 8124` interactively
     And I wait for output to contain:
     """
     Listening on 8124...
@@ -28,7 +28,7 @@ Feature: `start-server` command
 
   Scenario: Starting the service with a provided port number that is already in use
     Given a test service is started on port 8125
-    When I run `freshli-agent-java start-server 8125`
+    When I run `freshli-agent-java start-server --port 8125`
     Then the output should contain:
     """
     Unable to start the gRPC service. Port 8125 is in use.
