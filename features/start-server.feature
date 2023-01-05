@@ -57,29 +57,43 @@ Feature: `start-server` command
     When the gRPC service on the captured port is sent the shutdown command
     Then there are no services running on the captured port
 
-  Scenario: Starting the service on a randomly chosen port within a range of allowed values when all ports are in use
+  Scenario: Starting the service on a randomly chosen port within a range of allowed values when only port is available
     Given a test service is started on port 8130
-    And a test service is started on port 8131
+    Given there are no services running on port 8131
     And I set the environment variable "FRESHLI_AGENT_SERVER_PORT_RANGE" to "8130:8131"
     When I run `freshli-agent-java start-server`
-    Then the exit status should not be 0
-    And the output should contain:
-    """
-    Unable to start service. All ports with range 8130:8131 are in use.
-    """
+    And I wait for the output to contain a port number and capture it
+    Then the exit status should be 0
+    And the captured port should be within the range 8130 to 8131
+    And the freshli_agent.proto gRPC service is running on the captured port
+    When the gRPC service on the captured port is sent the shutdown command
+    Then there are no services running on the captured port
     When the test service running on port 8130 is stopped
     Then there are no services running on port 8130
-    When the test service running on port 8131 is stopped
-    Then there are no services running on port 8131
 
-  Scenario: Starting the service on a randomly chosen port should give up after 100 attempts
-    Given a test service is started on every port within the range 8140 to 8340
-    And I set the environment variable "FRESHLI_AGENT_SERVER_PORT_RANGE" to "8140:8340"
+  Scenario: Starting the service on a randomly chosen port within a range of allowed values when all ports are in use
+    Given a test service is started on port 8140
+    And a test service is started on port 8141
+    And I set the environment variable "FRESHLI_AGENT_SERVER_PORT_RANGE" to "8140:8141"
     When I run `freshli-agent-java start-server`
     Then the exit status should not be 0
     And the output should contain:
     """
-    Unable to start service. Gave up after trying 100 times to find an open port within the range 8140:8340.
+    Unable to start service. All ports with range 8140:8141 are in use.
     """
-    When each test service running on every port within the range 8140 to 8340 is stopped
-    Then there are no services running on every port within the range 8140 to 8340
+    When the test service running on port 8140 is stopped
+    Then there are no services running on port 8140
+    When the test service running on port 8141 is stopped
+    Then there are no services running on port 8141
+
+  Scenario: Starting the service on a randomly chosen port should give up after 100 attempts
+    Given a test service is started on every port within the range 8150 to 8300
+    And I set the environment variable "FRESHLI_AGENT_SERVER_PORT_RANGE" to "8150:8300"
+    When I run `freshli-agent-java start-server`
+    Then the exit status should not be 0
+    And the output should contain:
+    """
+    Unable to start service. Gave up after trying 100 times to find an open port within the range 8150:8300.
+    """
+    When each test service running on every port within the range 8150 to 8300 is stopped
+    Then there are no services running on every port within the range 8150 to 8300
