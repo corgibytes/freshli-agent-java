@@ -97,3 +97,16 @@ Then('the GetValidatingPackages response should contain:') do |doc_string|
 
   expect(@get_validating_packages_results).to eq(expected_packages)
 end
+
+When('I call GetValidatingRepositories on the captured port') do
+  @get_validating_repositories_results = GrpcClient.new(@captured_port).get_validating_repositories
+end
+
+Then('GetValidatingRepositories response should contain:') do |doc_string|
+  expected_repositories = []
+  doc_string.each_line do |repository|
+    expected_repositories << repository.strip
+  end
+
+  expect(@get_validating_repositories_results).to eq(expected_repositories)
+end

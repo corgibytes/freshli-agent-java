@@ -38,6 +38,17 @@ class GrpcClient
     result
   end
 
+  def get_validating_repositories
+    client = grpc_agent_client_on(@port)
+    response = client.get_validating_repositories(::Google::Protobuf::Empty.new)
+
+    result = []
+    response.each do |repository|
+      result << repository.url
+    end
+    result
+  end
+
   def health_check
     client = Grpc::Health::V1::Health::Stub.new("localhost:#{@port}", :this_channel_is_insecure)
     response = client.check(Grpc::Health::V1::HealthCheckRequest.new(service: Com::Corgibytes::Freshli::Agent::Agent::Service.service_name))

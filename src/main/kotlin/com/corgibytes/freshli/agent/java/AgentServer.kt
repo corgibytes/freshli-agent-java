@@ -51,6 +51,13 @@ class AgentServer(val port: Int) {
                 .asFlow()
         }
 
+        override fun getValidatingRepositories(request: Empty): Flow<FreshliAgent.RepositoryLocation> {
+            return ValidationData()
+                .repositories()
+                .map { FreshliAgent.RepositoryLocation.newBuilder().setUrl(it).build() }
+                .asFlow()
+        }
+
         override suspend fun shutdown(request: Empty): Empty {
             parent.stop()
             return Empty.getDefaultInstance()
