@@ -73,8 +73,7 @@ When('I wait for the output to contain a port number and capture it') do
     loop do
       output = last_command_started.public_send :stdout, wait_for_io: 0
 
-      output   = sanitize_text(output)
-
+      output = sanitize_text(output)
       if output.match?(/\d+/)
         @captured_port = output.to_i
         break
@@ -86,29 +85,35 @@ When('I wait for the output to contain a port number and capture it') do
 end
 
 Then('the freshli_agent.proto gRPC service is running on the captured port') do
-  pending # Write code here that turns the phrase above into concrete actions
+  verify_grpc_is_running_on(@captured_port)
 end
 
 When('the gRPC service on the captured port is sent the shutdown command') do
-  pending # Write code here that turns the phrase above into concrete actions
+  send_shutdown_to_grpc_on(@captured_port)
 end
 
 Then('there are no services running on the captured port') do
-  pending # Write code here that turns the phrase above into concrete actions
+  expect(port_available?(@captured_port)).to be_truthy
 end
 
-Then('the captured port should be within the range {int} to {int}') do |int, int2|
-  pending # Write code here that turns the phrase above into concrete actions
+Then('the captured port should be within the range {int} to {int}') do |range_start, range_end|
+  expect(range_start..range_end).to cover(@captured_port)
 end
 
-Given('a test service is started on every port within the range {int} to {int}') do |int, int2|
-  pending # Write code here that turns the phrase above into concrete actions
+Given('a test service is started on every port within the range {int} to {int}') do |range_start, range_end|
+  (range_start..range_end).each do |port|
+    test_services.start_on(port)
+  end
 end
 
-When('each test service running on every port within the range {int} to {int} is stopped') do |int, int2|
-  pending # Write code here that turns the phrase above into concrete actions
+When('each test service running on every port within the range {int} to {int} is stopped') do |range_start, range_end|
+  (range_start..range_end).each do |port|
+    test_services.stop_on(port)
+  end
 end
 
-Then('there are no services running on every port within the range {int} to {int}') do |int, int2|
-  pending # Write code here that turns the phrase above into concrete actions
+Then('there are no services running on every port within the range {int} to {int}') do |range_start, range_end|
+  (range_start..range_end).each do |port|
+    expect(port_available?(port)).to be_truthy
+  end
 end
