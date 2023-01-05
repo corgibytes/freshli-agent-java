@@ -20,11 +20,22 @@ class GrpcClient
     client = grpc_agent_client_on(@captured_port)
     response = client.detect_manifests(::Com::Corgibytes::Freshli::Agent::ProjectLocation.new(path: project_path))
 
-    actual_paths = []
+    result = []
     response.each do |location|
-      actual_paths << location.path
+      result << location.path
     end
-    actual_paths
+    result
+  end
+
+  def get_validating_packages
+    client = grpc_agent_client_on(@port)
+    response = client.get_validating_packages(::Google::Protobuf::Empty.new)
+
+    result = []
+    response.each do |package|
+      result << package.purl
+    end
+    result
   end
 
   def health_check

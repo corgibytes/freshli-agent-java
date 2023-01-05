@@ -3,6 +3,7 @@ package com.corgibytes.freshli.agent.java
 import com.corgibytes.freshli.agent.AgentGrpcKt
 import com.corgibytes.freshli.agent.FreshliAgent
 import com.corgibytes.freshli.agent.java.api.ManifestDetector
+import com.corgibytes.freshli.agent.java.api.ValidationData
 import com.google.protobuf.Empty
 import io.grpc.Server
 import io.grpc.ServerBuilder
@@ -40,6 +41,13 @@ class AgentServer(val port: Int) {
             return ManifestDetector()
                 .detect(request.path)
                 .map { FreshliAgent.ManifestLocation.newBuilder().setPath(it).build() }
+                .asFlow()
+        }
+
+        override fun getValidatingPackages(request: Empty): Flow<FreshliAgent.Package> {
+            return ValidationData()
+                .packageUrls()
+                .map { FreshliAgent.Package.newBuilder().setPurl(it).build() }
                 .asFlow()
         }
 

@@ -84,3 +84,16 @@ Then('the DetectManifests response contains the following file paths expanded be
 
   expect(@detect_manifests_paths).to eq(expected_paths)
 end
+
+When('I call GetValidatingPackages on the captured port') do
+  @get_validating_packages_results = GrpcClient.new(@captured_port).get_validating_packages
+end
+
+Then('the GetValidatingPackages response should contain:') do |doc_string|
+  expected_packages = []
+  doc_string.each_line do |package_url|
+    expected_packages << package_url.strip
+  end
+
+  expect(@get_validating_packages_results).to eq(expected_packages)
+end
