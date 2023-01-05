@@ -1,5 +1,8 @@
 require 'rspec/expectations'
 
+require 'freshli_agent_services_pb'
+require 'health_services_pb'
+
 class GrpcClient
   include RSpec::Matchers
 
