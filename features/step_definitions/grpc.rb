@@ -1,3 +1,6 @@
+require 'time'
+require 'google/protobuf/well_known_types'
+
 Then('the freshli_agent.proto gRPC service is running on port {int}') do |port|
   GrpcClient.new(port).is_running!
 end
@@ -76,12 +79,16 @@ When('I call DetectManifests with the full path to {string} on the captured port
   @detect_manifests_paths = GrpcClient.new(@captured_port).detect_manifests(expanded_path)
 end
 
-Then('the DetectManifests response contains the following file paths expanded beneath {string}:') do |project_path, doc_string|
-  expected_paths = []
+def expanded_paths_from(doc_string, project_path)
+  result = []
   doc_string.each_line do |file_path|
-    expected_paths << Platform.normalize_file_separators(File.expand_path(File.join(aruba.config.home_directory, project_path, file_path.strip)))
+    result << Platform.normalize_file_separators(File.expand_path(File.join(aruba.config.home_directory, project_path, file_path.strip)))
   end
+  result
+end
 
+Then('the DetectManifests response contains the following file paths expanded beneath {string}:') do |project_path, doc_string|
+  expected_paths = expanded_paths_from(doc_string, project_path)
   expect(@detect_manifests_paths).to eq(expected_paths)
 end
 
@@ -109,4 +116,15 @@ Then('GetValidatingRepositories response should contain:') do |doc_string|
   end
 
   expect(@get_validating_repositories_results).to eq(expected_repositories)
+end
+
+When('I call ProcessManifest with the expanded path {string} and the moment {string} on the captured port') do |manifest_path, moment_in_time|
+  expanded_path = Platform.normalize_file_separators(File.expand_path(File.join(aruba.config.home_directory, manifest_path)))
+  @process_manifest_result = GrpcClient.new(@captured_port).process_manifest(expanded_path, DateTime.parse(moment_in_time))
+end
+
+Then('the ProcessManifest response contains the following file paths expanded beneath {string}:') do |project_path, doc_string|
+  expected_paths = expanded_paths_from(doc_string, project_path)
+
+  expect([@process_manifest_result]).to eq(expected_paths)
 end

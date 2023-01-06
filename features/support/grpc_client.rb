@@ -49,6 +49,15 @@ class GrpcClient
     result
   end
 
+  def process_manifest(manifest_path, moment_in_time)
+    client = grpc_agent_client_on(@port)
+    response = client.process_manifest(::Com::Corgibytes::Freshli::Agent::ProcessingRequest.new(
+      manifest: ::Com::Corgibytes::Freshli::Agent::ManifestLocation.new(path: manifest_path),
+      moment: ::Google::Protobuf::Timestamp.from_time(moment_in_time.to_time)
+    ))
+    response.path
+  end
+
   def health_check
     client = Grpc::Health::V1::Health::Stub.new("localhost:#{@port}", :this_channel_is_insecure)
     response = client.check(Grpc::Health::V1::HealthCheckRequest.new(service: Com::Corgibytes::Freshli::Agent::Agent::Service.service_name))

@@ -3,6 +3,7 @@ package com.corgibytes.freshli.agent.java
 import com.corgibytes.freshli.agent.AgentGrpcKt
 import com.corgibytes.freshli.agent.FreshliAgent
 import com.corgibytes.freshli.agent.java.api.ManifestDetector
+import com.corgibytes.freshli.agent.java.api.ManifestProcessor
 import com.corgibytes.freshli.agent.java.api.ValidationData
 import com.google.protobuf.Empty
 import io.grpc.Server
@@ -12,6 +13,8 @@ import io.grpc.protobuf.services.HealthStatusManager
 import io.grpc.protobuf.services.ProtoReflectionService
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
+import java.time.ZoneId
+import java.time.ZonedDateTime
 
 class AgentServer(val port: Int) {
     private val healthStatusManager = HealthStatusManager()
@@ -56,6 +59,14 @@ class AgentServer(val port: Int) {
                 .repositories()
                 .map { FreshliAgent.RepositoryLocation.newBuilder().setUrl(it).build() }
                 .asFlow()
+        }
+
+        override suspend fun processManifest(request: FreshliAgent.ProcessingRequest): FreshliAgent.BomLocation {
+            val epochStart = ZonedDateTime.of(1970, 1, 1, 0, 0, 0, 0, ZoneId.of("Z"))
+            var moment = epochStart.plusSeconds(request.moment.seconds)
+            moment = moment.plusNanos(request.moment.nanos.toLong())
+            val bomFilePath = ManifestProcessor().process(request.manifest.path, moment)
+            return FreshliAgent.BomLocation.newBuilder().setPath(bomFilePath).build()
         }
 
         override suspend fun shutdown(request: Empty): Empty {
