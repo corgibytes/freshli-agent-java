@@ -26,11 +26,10 @@ class ReleaseHistoryRetriever {
 
         val actualResults = service.getVersionHistory(purl.namespace, purl.name)
 
-        if (actualResults.isEmpty()) {
-            throw ReleaseHistoryRetrievingFailure("Unable to find release history for $packageURL.")
-        }
-        else {
-            return actualResults
+        return if (actualResults.isEmpty()) {
+            emptyList()
+        } else {
+            actualResults
                 .asSequence()
                 .sortedBy { it.value.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME) + it.key }
                 .map { PackageReleaseData(it.key, it.value) }

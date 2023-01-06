@@ -2,10 +2,9 @@ package com.corgibytes.freshli.agent.java
 
 import com.corgibytes.freshli.agent.AgentGrpcKt
 import com.corgibytes.freshli.agent.FreshliAgent
-import com.corgibytes.freshli.agent.java.api.ManifestDetector
-import com.corgibytes.freshli.agent.java.api.ManifestProcessor
-import com.corgibytes.freshli.agent.java.api.ValidationData
+import com.corgibytes.freshli.agent.java.api.*
 import com.google.protobuf.Empty
+import com.google.protobuf.Timestamp
 import io.grpc.Server
 import io.grpc.ServerBuilder
 import io.grpc.health.v1.HealthCheckResponse
@@ -61,12 +60,33 @@ class AgentServer(val port: Int) {
                 .asFlow()
         }
 
+        private fun ZonedDateTime.toTimestamp(): Timestamp {
+            val instant = this.toInstant()
+            return Timestamp.newBuilder().setSeconds(instant.epochSecond).setNanos(instant.nano).build()
+        }
+
         override suspend fun processManifest(request: FreshliAgent.ProcessingRequest): FreshliAgent.BomLocation {
             val epochStart = ZonedDateTime.of(1970, 1, 1, 0, 0, 0, 0, ZoneId.of("Z"))
             var moment = epochStart.plusSeconds(request.moment.seconds)
             moment = moment.plusNanos(request.moment.nanos.toLong())
             val bomFilePath = ManifestProcessor().process(request.manifest.path, moment)
             return FreshliAgent.BomLocation.newBuilder().setPath(bomFilePath).build()
+        }
+
+        override fun retrieveReleaseHistory(request: FreshliAgent.Package): Flow<FreshliAgent.PackageRelease> {
+            return try {
+                ReleaseHistoryRetriever()
+                    .retrieve(request.purl)
+                    .map {
+                        FreshliAgent.PackageRelease.newBuilder()
+                            .setVersion(it.version)
+                            .setReleasedAt(it.releasedAt.toTimestamp())
+                            .build()
+                    }
+                    .asFlow()
+            } catch (failure: ReleaseHistoryRetrievingFailure) {
+                emptyList<FreshliAgent.PackageRelease>().asFlow()
+            }
         }
 
         override suspend fun shutdown(request: Empty): Empty {

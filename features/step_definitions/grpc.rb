@@ -128,3 +128,23 @@ Then('the ProcessManifest response contains the following file paths expanded be
 
   expect([@process_manifest_result]).to eq(expected_paths)
 end
+
+When('I call RetrieveReleaseHistory with {string} on the captured port') do |package_url|
+  @retrieve_release_history_results = GrpcClient.new(@captured_port).retrieve_release_history(package_url)
+end
+
+Then('RetrieveReleaseHistory response should contain the following versions and release dates:') do |doc_string|
+  expected_package_releases = []
+  doc_string.each_line do |line|
+    splits = line.strip.split("\t")
+    expected_package_releases << { version: splits[0], released_at: DateTime.parse(splits[1]).new_offset("0:00") }
+  end
+
+  filtered_results = @retrieve_release_history_results.take(expected_package_releases.length)
+
+  expect(filtered_results).to eq(expected_package_releases)
+end
+
+Then('RetrieveReleaseHistory response should be empty') do
+  expect(@retrieve_release_history_results).to be_empty
+end

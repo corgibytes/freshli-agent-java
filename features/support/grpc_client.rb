@@ -58,6 +58,19 @@ class GrpcClient
     response.path
   end
 
+  def retrieve_release_history(package_url)
+    client = grpc_agent_client_on(@port)
+    response = client.retrieve_release_history(::Com::Corgibytes::Freshli::Agent::Package.new(purl: package_url))
+    result = []
+    response.each do |release|
+      result << {
+        version: release.version,
+        released_at: release.released_at.to_time.to_datetime.new_offset("0:00")
+      }
+    end
+    result
+  end
+
   def health_check
     client = Grpc::Health::V1::Health::Stub.new("localhost:#{@port}", :this_channel_is_insecure)
     response = client.check(Grpc::Health::V1::HealthCheckRequest.new(service: Com::Corgibytes::Freshli::Agent::Agent::Service.service_name))

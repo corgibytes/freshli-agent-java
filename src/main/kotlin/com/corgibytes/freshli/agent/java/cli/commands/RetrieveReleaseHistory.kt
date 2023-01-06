@@ -12,6 +12,12 @@ class RetrieveReleaseHistory: CliktCommand(help="Retrieves release history for a
     override fun run() {
         try {
             val releases = ReleaseHistoryRetriever().retrieve(packageURL)
+
+            if (releases.isEmpty()) {
+                println("Unable to find release history for $packageURL.")
+                throw ProgramResult(-1)
+            }
+
             releases.forEach {
                 println(it.version + "\t" + it.releasedAt.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME))
             }

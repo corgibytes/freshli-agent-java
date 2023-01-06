@@ -68,6 +68,8 @@ Feature: Invoking RetrieveReleaseHistory via gRPC
     3.8.4	2021-11-14T09:19:02Z
     3.8.5	2022-03-05T15:41:10Z
     """
+    When the gRPC service on the captured port is sent the shutdown command
+    Then there are no services running on the captured port
 
   Scenario: Valid Package URL from alternative repository
     Some packages are not located in the default repository, such as the `org.springframework.spring-core` package. The
