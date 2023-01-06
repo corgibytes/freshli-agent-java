@@ -1,5 +1,8 @@
+# frozen_string_literal: true
+
 require 'rspec/expectations'
 
+# Controls running test services on specific ports. Used to force a specific port to be in use.
 class TestServices
   include RSpec::Matchers
 

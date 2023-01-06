@@ -1,8 +1,11 @@
+# frozen_string_literal: true
+
 require 'rspec/expectations'
 
 require 'freshli_agent_services_pb'
 require 'health_services_pb'
 
+# Test driver client for communicating with the gRPC API.
 class GrpcClient
   include RSpec::Matchers
 
@@ -27,6 +30,7 @@ class GrpcClient
     result
   end
 
+  # rubocop:disable Naming/AccessorMethodName
   def get_validating_packages
     client = grpc_agent_client_on(@port)
     response = client.get_validating_packages(::Google::Protobuf::Empty.new)
@@ -48,13 +52,16 @@ class GrpcClient
     end
     result
   end
+  # rubocop:enable Naming/AccessorMethodName
 
   def process_manifest(manifest_path, moment_in_time)
     client = grpc_agent_client_on(@port)
-    response = client.process_manifest(::Com::Corgibytes::Freshli::Agent::ProcessingRequest.new(
-      manifest: ::Com::Corgibytes::Freshli::Agent::ManifestLocation.new(path: manifest_path),
-      moment: ::Google::Protobuf::Timestamp.from_time(moment_in_time.to_time)
-    ))
+    response = client.process_manifest(
+      ::Com::Corgibytes::Freshli::Agent::ProcessingRequest.new(
+        manifest: ::Com::Corgibytes::Freshli::Agent::ManifestLocation.new(path: manifest_path),
+        moment: ::Google::Protobuf::Timestamp.from_time(moment_in_time.to_time)
+      )
+    )
     response.path
   end
 
@@ -65,7 +72,7 @@ class GrpcClient
     response.each do |release|
       result << {
         version: release.version,
-        released_at: release.released_at.to_time.to_datetime.new_offset("0:00")
+        released_at: release.released_at.to_time.to_datetime.new_offset('0:00')
       }
     end
     result
@@ -73,17 +80,21 @@ class GrpcClient
 
   def health_check
     client = Grpc::Health::V1::Health::Stub.new("localhost:#{@port}", :this_channel_is_insecure)
-    response = client.check(Grpc::Health::V1::HealthCheckRequest.new(service: Com::Corgibytes::Freshli::Agent::Agent::Service.service_name))
+    response = client.check(
+      Grpc::Health::V1::HealthCheckRequest.new(service: Com::Corgibytes::Freshli::Agent::Agent::Service.service_name)
+    )
     response.status
   end
 
+  # rubocop:disable Naming/PredicateName
   def is_running!
     expect(health_check).to eq(:SERVING)
   end
+  # rubocop:enable Naming/PredicateName
 
   private
-  def grpc_agent_client_on(port)
+
+  def grpc_agent_client_on(_port)
     Com::Corgibytes::Freshli::Agent::Agent::Stub.new("localhost:#{@port}", :this_channel_is_insecure)
   end
-
 end

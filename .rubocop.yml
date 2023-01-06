@@ -1,6 +1,8 @@
 AllCops:
   NewCops: enable
   TargetRubyVersion: 3.0
+  Exclude:
+    - 'features/step_definitions/grpc/**/*'
 
 Style/ConditionalAssignment:
   Enabled: false
