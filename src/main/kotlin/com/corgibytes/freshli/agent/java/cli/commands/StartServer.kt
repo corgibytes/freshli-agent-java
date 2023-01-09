@@ -2,6 +2,7 @@ package com.corgibytes.freshli.agent.java.cli.commands
 
 import com.corgibytes.freshli.agent.java.AgentServer
 import com.github.ajalt.clikt.core.CliktCommand
+import com.github.ajalt.clikt.core.ProgramResult
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.types.int
 import kotlinx.coroutines.delay
@@ -123,13 +124,21 @@ class StartServer: CliktCommand(help="Starts a gRPC server running the Freshli A
         }
 
     private val previousPorts = mutableListOf<Int>()
+    private val remainingPorts = mutableListOf<Int>()
 
     private fun nextRandomPort(): Int {
-        if (previousPorts.count() < portRange.count()) {
-            var port = Random.nextInt(portRange.first, portRange.last)
-            while (previousPorts.contains(port)) {
-                 port = Random.nextInt(portRange.first, portRange.last + 1)
+        if (previousPorts.isEmpty()) {
+            remainingPorts.addAll(portRange.toList())
+        }
+
+        if (!remainingPorts.isEmpty()) {
+            var portIndex = Random.nextInt(0, remainingPorts.count())
+            var port = remainingPorts[portIndex]
+            if (previousPorts.contains(port)) {
+                println("List of previously attempted ports contains the port that was randomly selected. Please report this as a bug.")
+                throw ProgramResult(-1)
             }
+            remainingPorts.removeAt(portIndex)
             previousPorts.add(port)
             return port
         }
