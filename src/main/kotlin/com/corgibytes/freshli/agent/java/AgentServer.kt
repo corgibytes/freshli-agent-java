@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
 import java.time.ZoneId
 import java.time.ZonedDateTime
+import java.util.concurrent.TimeUnit
 
 class AgentServer(val port: Int) {
     private val healthStatusManager = HealthStatusManager()
@@ -31,6 +32,11 @@ class AgentServer(val port: Int) {
 
     fun stop() {
         server.shutdown()
+        server.awaitTermination(1, TimeUnit.MINUTES)
+        if (!server.isShutdown) {
+            println("Warning: Forcibly stopping the gRPC service even though there are still some connections in progress.")
+            server.shutdownNow()
+        }
     }
 
     fun blockUntilShutdown() {
