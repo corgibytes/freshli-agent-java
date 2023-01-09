@@ -3,7 +3,7 @@
 # Contains utility methods for working with IP ports, specifically determining which ones are available for use.
 module Ports
   # rubocop:disable Metrics/MethodLength
-  def self.available?(port, &block)
+  def self.available?(port)
     max_attempts = 200
     attempts = 0
     begin
