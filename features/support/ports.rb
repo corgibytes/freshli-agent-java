@@ -20,8 +20,6 @@ module Ports
   end
   # rubocop:enable Metrics/MethodLength
 
-  private
-
   def self.attempt_connection(port)
     # based on https://stackoverflow.com/a/34375147/243215
     require 'socket'
