@@ -51,7 +51,7 @@ When('the gRPC service on the captured port is sent the shutdown command') do
 end
 
 Then('there are no services running on the captured port') do
-  expect(Ports.available?(@captured_port)).to be_truthy
+  expect(Ports.available?(@captured_port) {|attempts| log(attempts)}).to be_truthy
 end
 
 Then('the captured port should be within the range {int} to {int}') do |range_start, range_end|

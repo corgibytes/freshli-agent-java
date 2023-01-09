@@ -3,11 +3,12 @@
 # Contains utility methods for working with IP ports, specifically determining which ones are available for use.
 module Ports
   # rubocop:disable Metrics/MethodLength
-  def self.available?(port)
+  def self.available?(port, &block)
     max_attempts = 200
     attempts = 0
     begin
       attempts += 1
+      block(attempts) if block_given?
       attempt_connection(port)
       true
     rescue Errno::EADDRINUSE
