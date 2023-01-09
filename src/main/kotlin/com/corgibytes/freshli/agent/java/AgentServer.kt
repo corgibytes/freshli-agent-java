@@ -31,12 +31,7 @@ class AgentServer(val port: Int) {
     }
 
     fun stop() {
-        server.shutdown()
-        server.awaitTermination(1, TimeUnit.MINUTES)
-        if (!server.isShutdown) {
-            println("Warning: Forcibly stopping the gRPC service even though there are still some connections in progress.")
-            server.shutdownNow()
-        }
+        server.shutdownNow()
     }
 
     fun blockUntilShutdown() {
