@@ -2,16 +2,13 @@
 
 # Contains utility methods for working with IP ports, specifically determining which ones are available for use.
 module Ports
+  # rubocop:disable Metrics/MethodLength
   def self.available?(port)
-    # based on https://stackoverflow.com/a/34375147/243215
-    require 'socket'
     max_attempts = 100
     attempts = 0
     begin
       attempts += 1
-      socket = Socket.new(Socket::Constants::AF_INET, Socket::Constants::SOCK_STREAM, 0)
-      socket.bind(Socket.pack_sockaddr_in(port, '0.0.0.0'))
-      socket.close
+      attempt_connection(port)
       true
     rescue Errno::EADDRINUSE
       if attempts < max_attempts
@@ -20,5 +17,16 @@ module Ports
       end
       false
     end
+  end
+  # rubocop:enable Metrics/MethodLength
+
+  private
+
+  def attempt_connection(port)
+    # based on https://stackoverflow.com/a/34375147/243215
+    require 'socket'
+    socket = Socket.new(Socket::Constants::AF_INET, Socket::Constants::SOCK_STREAM, 0)
+    socket.bind(Socket.pack_sockaddr_in(port, '0.0.0.0'))
+    socket.close
   end
 end
