@@ -64,6 +64,8 @@ if status.nil? || status.success?
     )
   end
 
+  FileUtils.mkdir_p('tmp')
+
   if status.success?
     download(
       'https://raw.githubusercontent.com/grpc/grpc-java/3c5c2be7125d57ca48d69ad6aa2682e6d4094487/services/src' \
