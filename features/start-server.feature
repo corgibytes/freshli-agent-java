@@ -37,6 +37,7 @@ Feature: `start-server` command
     When the test service running on port 8125 is stopped
     Then there are no services running on port 8125
 
+  @announce-output
   Scenario: Starting the service on a randomly chosen port
     When I run `freshli-agent-java start-server`
     And I wait for the output to contain a port number and capture it
@@ -45,6 +46,7 @@ Feature: `start-server` command
     When the gRPC service on the captured port is sent the shutdown command
     Then there are no services running on the captured port
 
+  @announce-output
   Scenario: Starting the service on a randomly chosen port within a range of allowed values
     Given there are no services running on port 8120
     And there are no services running on port 8121
@@ -57,6 +59,7 @@ Feature: `start-server` command
     When the gRPC service on the captured port is sent the shutdown command
     Then there are no services running on the captured port
 
+  @annouce-output
   Scenario: Starting the service on a randomly chosen port within a range of allowed values when only port is available
     Given a test service is started on port 8130
     Given there are no services running on port 8131
