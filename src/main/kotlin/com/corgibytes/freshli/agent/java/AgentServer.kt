@@ -31,7 +31,7 @@ class AgentServer(val port: Int) {
     }
 
     fun stop() {
-        server.shutdownNow()
+        server.shutdown()
     }
 
     fun blockUntilShutdown() {
