@@ -48,12 +48,12 @@ jobs:
 
       - name: "[Lint] - run linters"
         run: |
-          ./bin/lint.rb
+          ruby ./bin/lint.rb
 
       - name: "[Build] - run build"
         run: |
-          ./bin/build.rb
+          ruby ./bin/build.rb
 
       - name: "[Test] - run all tests"
         run: |
-          ./bin/test.rb --skip-build
+          ruby ./bin/test.rb --skip-build
