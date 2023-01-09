@@ -3,6 +3,7 @@
 
 require 'English'
 require 'optparse'
+require 'fileutils'
 
 require_relative './support/execute'
 
@@ -53,6 +54,8 @@ status = execute("ruby #{File.dirname(__FILE__)}/build.rb") if perform_build
 if status.nil? || status.success?
   status = execute("bundle check > #{null_output_target}")
   status = execute('bundle install') unless status.success?
+
+  FileUtils.mkdir_p('features/step_definitions/grpc')
 
   if status.success?
     status = execute(
