@@ -32,7 +32,7 @@ jobs:
           java-version: ${{ matrix.java-version }}
 
       - name: "[Setup] - Install Ruby"
-        uses: ruby/setup-ruby@v1.128.0
+        uses: ruby/setup-ruby@v1.127.0
         with:
           ruby-version: 3.0 # Not needed with a .ruby-version file
           bundler-cache: true
