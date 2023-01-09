@@ -8,7 +8,7 @@ module Ports
     attempts = 0
     begin
       attempts += 1
-      block(attempts) if block_given?
+      yield(attempts) if block_given?
       attempt_connection(port)
       true
     rescue Errno::EADDRINUSE
