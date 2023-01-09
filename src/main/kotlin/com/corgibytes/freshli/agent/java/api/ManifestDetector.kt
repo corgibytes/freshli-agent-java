@@ -25,6 +25,6 @@ class ManifestDetector {
         }
 
         results.removeIf { submodules.contains(it) }
-        return results
+        return results.sorted()
     }
 }
