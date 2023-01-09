@@ -22,7 +22,7 @@ module Ports
 
   private
 
-  def attempt_connection(port)
+  def self.attempt_connection(port)
     # based on https://stackoverflow.com/a/34375147/243215
     require 'socket'
     socket = Socket.new(Socket::Constants::AF_INET, Socket::Constants::SOCK_STREAM, 0)
