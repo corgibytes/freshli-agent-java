@@ -25,7 +25,7 @@ When('the test service running on port {int} is stopped') do |port|
   test_services.stop_on(port)
 end
 
-When('I call DetectManifests with the full path to {string} on the port {int}') do |project_path, port|
+When('I call DetectManifests with the full path to {string} on port {int}') do |project_path, port|
   expanded_path = Platform.normalize_file_separators(
     File.expand_path(File.join(aruba.config.home_directory, project_path))
   )
@@ -50,7 +50,7 @@ Then('the DetectManifests response contains the following file paths expanded be
   expect(@detect_manifests_paths).to eq(expected_paths)
 end
 
-When('I call GetValidatingPackages on the port {int}') do |port|
+When('I call GetValidatingPackages on port {int}') do |port|
   @get_validating_packages_results = GrpcClient.new(port).get_validating_packages
 end
 
