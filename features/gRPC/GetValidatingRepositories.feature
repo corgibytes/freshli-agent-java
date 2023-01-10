@@ -19,4 +19,4 @@ Feature: Invoke GetValidatingRepositories via gRPC
     """
     When the gRPC service on port 8192 is sent the shutdown command
     Then there are no services running on port 8192
-    And the exit status code should be 0
+    And the exit status should be 0
