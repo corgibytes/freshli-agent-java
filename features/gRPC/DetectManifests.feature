@@ -9,23 +9,20 @@ Feature: Invoking DetectManifests via gRPC
 
   For each manifest file that is listed, the response needs to contain the full path to the file.
 
-  Background: The gRPC server is running on a randomly assigned port that has been captured for later use
-    When I run `freshli-agent-java start-server`
-    And I wait for the output to contain a port number and capture it
-    Then the exit status should be 0
-
   Scenario: A multi-module project with a `pom.xml` file in the root directory
   This project contains several `pom.xml` files, but since all but the root file is a sub-module, then only the root
   `pom.xml` file should be included in the output.
 
     Given I clone the git repository "https://github.com/questdb/questdb" with the sha "0b465538639e24850e3471bdb0a234c20d8af58b"
-    When I call DetectManifests with the full path to "tmp/repositories/questdb" on the captured port
+    When I run `freshli-agent-java start-server 8192` interactively
+    And I call DetectManifests with the full path to "tmp/repositories/questdb" on port 8192
     Then the DetectManifests response contains the following file paths expanded beneath "tmp/repositories/questdb":
     """
     pom.xml
     """
-    When the gRPC service on the captured port is sent the shutdown command
-    Then there are no services running on the captured port
+    When the gRPC service on port 8192 is sent the shutdown command
+    Then there are no services running on port 8192
+    And the exit status should be 0
 
   Scenario: A multi-module project located in a sub-directory along with `pom.xml` files in other directories
   This project contains several `pom.xml` files. Many of the files appear within the `java` directory or one of it's
@@ -33,7 +30,8 @@ Feature: Invoking DetectManifests via gRPC
   directory as sub-modules. The rest of the `pom.xml` files contain no modules.
 
     Given I clone the git repository "https://github.com/protocolbuffers/protobuf" with the sha "d8421bd49c1328dc5bcaea2e60dd6577ac235336"
-    When I call DetectManifests with the full path to "tmp/repositories/protobuf" on the captured port
+    When I run `freshli-agent-java start-server 8192` interactively
+    And I call DetectManifests with the full path to "tmp/repositories/protobuf" on port 8192
     Then the DetectManifests response contains the following file paths expanded beneath "tmp/repositories/protobuf":
     """
     java/pom.xml
@@ -41,19 +39,22 @@ Feature: Invoking DetectManifests via gRPC
     protoc-artifacts/pom.xml
     ruby/pom.xml
     """
-    When the gRPC service on the captured port is sent the shutdown command
-    Then there are no services running on the captured port
+    When the gRPC service on port 8192 is sent the shutdown command
+    Then there are no services running on port 8192
+    And the exit status should be 0
 
   Scenario: Unrelated modules located in sub-directories
   This project contains two `pom.xml` files, neither of which has any sub-modules. Therefore, each file should be
   listed.
 
     Given I clone the git repository "https://github.com/serverless/serverless" with the sha "9c2ebb78d8db30acde24bd31efa1d6516d177b0e"
-    When I call DetectManifests with the full path to "tmp/repositories/serverless" on the captured port
+    When I run `freshli-agent-java start-server 8192` interactively
+    And I call DetectManifests with the full path to "tmp/repositories/serverless" on port 8192
     Then the DetectManifests response contains the following file paths expanded beneath "tmp/repositories/serverless":
     """
     docs/providers/openwhisk/examples/hello-world/java/pom.xml
     lib/plugins/aws/invoke-local/runtime-wrappers/java/pom.xml
     """
-    When the gRPC service on the captured port is sent the shutdown command
-    Then there are no services running on the captured port
+    When the gRPC service on port 8192 is sent the shutdown command
+    Then there are no services running on port 8192
+    And the exit status should be 0

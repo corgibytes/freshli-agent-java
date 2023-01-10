@@ -4,11 +4,6 @@ Feature: Invoking RetrieveReleaseHistory via gRPC
 
   Results are sorted sorted by date with the oldest date provided first.
 
-  Background: The gRPC server is running on a randomly assigned port that has been captured for later use
-    When I run `freshli-agent-java start-server`
-    And I wait for the output to contain a port number and capture it
-    Then the exit status should be 0
-
   Scenario: Valid Package URL
     Since the `RetrieveReleaseHistory` gRPC call always provides the full release history, it's expected that the
     version component will be omitted from the provided package url.
@@ -17,7 +12,8 @@ Feature: Invoking RetrieveReleaseHistory via gRPC
     is expected that this scenario will still pass when newer versions become available and are added to the end of the
     output.
 
-    When I call RetrieveReleaseHistory with "pkg:maven/org.apache.maven/apache-maven" on the captured port
+    When I run `freshli-agent-java start-server 8192` interactively
+    And I call RetrieveReleaseHistory with "pkg:maven/org.apache.maven/apache-maven" on port 8192
     Then RetrieveReleaseHistory response should contain the following versions and release dates:
     """
     2.0.9	2008-04-10T00:16:46Z
@@ -68,8 +64,9 @@ Feature: Invoking RetrieveReleaseHistory via gRPC
     3.8.4	2021-11-14T09:19:02Z
     3.8.5	2022-03-05T15:41:10Z
     """
-    When the gRPC service on the captured port is sent the shutdown command
-    Then there are no services running on the captured port
+    When the gRPC service on port 8192 is sent the shutdown command
+    Then there are no services running on port 8192
+    And the exit status should be 0
 
   Scenario: Valid Package URL from alternative repository
     Some packages are not located in the default repository, such as the `org.springframework.spring-core` package. The
@@ -83,7 +80,8 @@ Feature: Invoking RetrieveReleaseHistory via gRPC
     is expected that this scenario will still pass when newer versions become available and are added to the end of the
     output.
 
-    When I call RetrieveReleaseHistory with "pkg:maven/org.springframework/spring-core?repository_url=repo.spring.io%2Frelease" on the captured port
+    When I run `freshli-agent-java start-server 8192` interactively
+    And I call RetrieveReleaseHistory with "pkg:maven/org.springframework/spring-core?repository_url=repo.spring.io%2Frelease" on port 8192
     Then RetrieveReleaseHistory response should contain the following versions and release dates:
     """
     1.0	2005-12-23T17:06:05Z
@@ -313,8 +311,9 @@ Feature: Invoking RetrieveReleaseHistory via gRPC
     5.3.21	2022-06-15T08:18:36Z
     5.3.22	2022-07-14T08:51:44Z
     """
-    When the gRPC service on the captured port is sent the shutdown command
-    Then there are no services running on the captured port
+    When the gRPC service on port 8192 is sent the shutdown command
+    Then there are no services running on port 8192
+    And the exit status should be 0
 
   Scenario: Valid Package URL from alternative repository that includes url scheme
     Some packages are not located in the default repository, such as the `org.springframework.spring-core` package. The
@@ -328,7 +327,8 @@ Feature: Invoking RetrieveReleaseHistory via gRPC
     is expected that this scenario will still pass when newer versions become available and are added to the end of the
     output.
 
-    When I call RetrieveReleaseHistory with "pkg:maven/org.springframework/spring-core?repository_url=http%3A%2F%2Frepo.spring.io%2Frelease" on the captured port
+    When I run `freshli-agent-java start-server 8192` interactively
+    And I call RetrieveReleaseHistory with "pkg:maven/org.springframework/spring-core?repository_url=http%3A%2F%2Frepo.spring.io%2Frelease" on port 8192
     Then RetrieveReleaseHistory response should contain the following versions and release dates:
     """
     1.0	2005-12-23T17:06:05Z
@@ -558,23 +558,28 @@ Feature: Invoking RetrieveReleaseHistory via gRPC
     5.3.21	2022-06-15T08:18:36Z
     5.3.22	2022-07-14T08:51:44Z
     """
-    When the gRPC service on the captured port is sent the shutdown command
-    Then there are no services running on the captured port
+    When the gRPC service on port 8192 is sent the shutdown command
+    Then there are no services running on port 8192
+    And the exit status should be 0
 
   Scenario: Valid Package URL for an unknown package
     If the command is unable to find any release history for the specified package, then it should output a friendly
     error message and use the program's status code to indicate that there's been a failure.
 
-    When I call RetrieveReleaseHistory with "pkg:maven/com.corgibytes/missing" on the captured port
+    When I run `freshli-agent-java start-server 8192` interactively
+    And I call RetrieveReleaseHistory with "pkg:maven/com.corgibytes/missing" on port 8192
     Then RetrieveReleaseHistory response should be empty
-    When the gRPC service on the captured port is sent the shutdown command
-    Then there are no services running on the captured port
+    When the gRPC service on port 8192 is sent the shutdown command
+    Then there are no services running on port 8192
+    And the exit status should be 0
 
   Scenario: Invalid Package URL
     If the command is unable parse the package url, then it should output a friendly error message and use the
     program's status code to indicate that there's been a failure.
 
-    When I call RetrieveReleaseHistory with "invalid" on the captured port
+    When I run `freshli-agent-java start-server 8192` interactively
+    And I call RetrieveReleaseHistory with "invalid" on port 8192
     Then RetrieveReleaseHistory response should be empty
-    When the gRPC service on the captured port is sent the shutdown command
-    Then there are no services running on the captured port
+    When the gRPC service on port 8192 is sent the shutdown command
+    Then there are no services running on port 8192
+    And the exit status should be 0
