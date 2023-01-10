@@ -15,6 +15,10 @@ Feature: Invoking DetectManifests via gRPC
 
     Given I clone the git repository "https://github.com/questdb/questdb" with the sha "0b465538639e24850e3471bdb0a234c20d8af58b"
     When I run `freshli-agent-java start-server 8192` interactively
+    And I wait for output to contain:
+    """
+    Listening on 8192...
+    """
     And I call DetectManifests with the full path to "tmp/repositories/questdb" on port 8192
     Then the DetectManifests response contains the following file paths expanded beneath "tmp/repositories/questdb":
     """
@@ -31,6 +35,10 @@ Feature: Invoking DetectManifests via gRPC
 
     Given I clone the git repository "https://github.com/protocolbuffers/protobuf" with the sha "d8421bd49c1328dc5bcaea2e60dd6577ac235336"
     When I run `freshli-agent-java start-server 8192` interactively
+    And I wait for output to contain:
+    """
+    Listening on 8192...
+    """
     And I call DetectManifests with the full path to "tmp/repositories/protobuf" on port 8192
     Then the DetectManifests response contains the following file paths expanded beneath "tmp/repositories/protobuf":
     """
@@ -49,6 +57,10 @@ Feature: Invoking DetectManifests via gRPC
 
     Given I clone the git repository "https://github.com/serverless/serverless" with the sha "9c2ebb78d8db30acde24bd31efa1d6516d177b0e"
     When I run `freshli-agent-java start-server 8192` interactively
+    And I wait for output to contain:
+    """
+    Listening on 8192...
+    """
     And I call DetectManifests with the full path to "tmp/repositories/serverless" on port 8192
     Then the DetectManifests response contains the following file paths expanded beneath "tmp/repositories/serverless":
     """

@@ -12,6 +12,10 @@ Feature: Invoking ProcessManifest via gRPC
 
     Given I clone the git repository "https://github.com/corgibytes/freshli-fixture-java-maven-version-range" with the sha "2260b7cc3b7ae2b0ff80c818a8ec70ae82cd14ec"
     When I run `freshli-agent-java start-server 8192` interactively
+    And I wait for output to contain:
+    """
+    Listening on 8192...
+    """
     And I call ProcessManifest with the expanded path "tmp/repositories/freshli-fixture-java-maven-version-range/pom.xml" and the moment "2021-01-01T00:00:00Z" on port 8192
     Then the ProcessManifest response contains the following file paths expanded beneath "tmp/repositories/freshli-fixture-java-maven-version-range":
     """
@@ -31,6 +35,10 @@ Feature: Invoking ProcessManifest via gRPC
 
     Given I clone the git repository "https://github.com/questdb/questdb" with the sha "0b465538639e24850e3471bdb0a234c20d8af58b"
     When I run `freshli-agent-java start-server 8192` interactively
+    And I wait for output to contain:
+    """
+    Listening on 8192...
+    """
     And I call ProcessManifest with the expanded path "tmp/repositories/questdb/pom.xml" and the moment "2022-08-23T19:45:55Z" on port 8192
     Then the ProcessManifest response contains the following file paths expanded beneath "tmp/repositories/questdb":
     """
@@ -48,6 +56,10 @@ Feature: Invoking ProcessManifest via gRPC
   Scenario: A multi-module project located in a sub-directory
     Given I clone the git repository "https://github.com/protocolbuffers/protobuf" with the sha "d8421bd49c1328dc5bcaea2e60dd6577ac235336"
     When I run `freshli-agent-java start-server 8192` interactively
+    And I wait for output to contain:
+    """
+    Listening on 8192...
+    """
     And I call ProcessManifest with the expanded path "tmp/repositories/protobuf/java/pom.xml" and the moment "2022-08-23T19:45:55Z" on port 8192
     Then the ProcessManifest response contains the following file paths expanded beneath "tmp/repositories/protobuf":
     """

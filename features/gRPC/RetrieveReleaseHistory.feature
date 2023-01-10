@@ -13,6 +13,10 @@ Feature: Invoking RetrieveReleaseHistory via gRPC
     output.
 
     When I run `freshli-agent-java start-server 8192` interactively
+    And I wait for output to contain:
+    """
+    Listening on 8192...
+    """
     And I call RetrieveReleaseHistory with "pkg:maven/org.apache.maven/apache-maven" on port 8192
     Then RetrieveReleaseHistory response should contain the following versions and release dates:
     """
@@ -81,6 +85,10 @@ Feature: Invoking RetrieveReleaseHistory via gRPC
     output.
 
     When I run `freshli-agent-java start-server 8192` interactively
+    And I wait for output to contain:
+    """
+    Listening on 8192...
+    """
     And I call RetrieveReleaseHistory with "pkg:maven/org.springframework/spring-core?repository_url=repo.spring.io%2Frelease" on port 8192
     Then RetrieveReleaseHistory response should contain the following versions and release dates:
     """
@@ -328,6 +336,10 @@ Feature: Invoking RetrieveReleaseHistory via gRPC
     output.
 
     When I run `freshli-agent-java start-server 8192` interactively
+    And I wait for output to contain:
+    """
+    Listening on 8192...
+    """
     And I call RetrieveReleaseHistory with "pkg:maven/org.springframework/spring-core?repository_url=http%3A%2F%2Frepo.spring.io%2Frelease" on port 8192
     Then RetrieveReleaseHistory response should contain the following versions and release dates:
     """
@@ -567,6 +579,10 @@ Feature: Invoking RetrieveReleaseHistory via gRPC
     error message and use the program's status code to indicate that there's been a failure.
 
     When I run `freshli-agent-java start-server 8192` interactively
+    And I wait for output to contain:
+    """
+    Listening on 8192...
+    """
     And I call RetrieveReleaseHistory with "pkg:maven/com.corgibytes/missing" on port 8192
     Then RetrieveReleaseHistory response should be empty
     When the gRPC service on port 8192 is sent the shutdown command
@@ -578,6 +594,10 @@ Feature: Invoking RetrieveReleaseHistory via gRPC
     program's status code to indicate that there's been a failure.
 
     When I run `freshli-agent-java start-server 8192` interactively
+    And I wait for output to contain:
+    """
+    Listening on 8192...
+    """
     And I call RetrieveReleaseHistory with "invalid" on port 8192
     Then RetrieveReleaseHistory response should be empty
     When the gRPC service on port 8192 is sent the shutdown command

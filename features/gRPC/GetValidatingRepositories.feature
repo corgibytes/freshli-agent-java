@@ -5,6 +5,10 @@ Feature: Invoke GetValidatingRepositories via gRPC
 
   Scenario: Get the repository urls
     When I run `freshli-agent-java start-server 8192` interactively
+    And I wait for output to contain:
+    """
+    Listening on 8192...
+    """
     And I call GetValidatingRepositories on port 8192
     Then GetValidatingRepositories response should contain:
     """
