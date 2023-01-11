@@ -1,5 +1,7 @@
 package com.corgibytes.freshli.agent.java
 
+import com.corgibytes.freshli.agent.java.cli.FreshliAgentJava
+import com.corgibytes.freshli.agent.java.cli.commands.*
 import com.corgibytes.maven.ReleaseHistoryService
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.core.ProgramResult
@@ -18,167 +20,13 @@ import java.time.format.DateTimeFormatter
 import kotlin.io.path.exists
 import kotlin.system.exitProcess
 
-
-class FreshliAgentJava: CliktCommand() {
-    override fun run() = Unit
-}
-
-class ValidatingPackageUrls: CliktCommand(help="Lists package urls that can be used to validate this agent") {
-    override fun run() {
-        println("pkg:maven/org.apache.maven/apache-maven")
-        println("pkg:maven/org.springframework/spring-core?repository_url=repo.spring.io%2Frelease")
-        println("pkg:maven/org.springframework/spring-core?repository_url=http%3A%2F%2Frepo.spring.io%2Frelease")
-    }
-}
-
-class RetrieveReleaseHistory: CliktCommand(help="Retrieves release history for a specific package") {
-    private val packageURL by argument()
-    override fun run() {
-        val purl: PackageURL
-        try {
-            purl = PackageURL(packageURL)
-        } catch (error: MalformedPackageURLException) {
-            println("Unable to parse the Package URL: $packageURL.")
-            exitProcess(-1)
-        }
-
-        val service: ReleaseHistoryService = if (purl.qualifiers != null && purl.qualifiers.containsKey("repository_url")) {
-            var repositoryUrl = purl.qualifiers["repository_url"]!!
-            if (!repositoryUrl.contains("://")) {
-                repositoryUrl = "https://$repositoryUrl"
-            }
-            ReleaseHistoryService(repositoryUrl)
-        } else {
-            ReleaseHistoryService()
-        }
-
-        val actualResults = service.getVersionHistory(purl.namespace, purl.name)
-
-        if (actualResults.isEmpty()) {
-            println("Unable to find release history for $packageURL.")
-            exitProcess(-1)
-        }
-        else {
-            actualResults.asSequence().sortedBy { it.value.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME) + it.key }
-                .forEach {
-                    println(it.key + "\t" + it.value.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME))
-                }
-        }
-    }
-}
-
-class ValidatingRepositories: CliktCommand(help="Lists repositories that can be used to validate this agent") {
-    override fun run() {
-        println("https://github.com/corgibytes/freshli-fixture-java-maven-version-range")
-        println("https://github.com/questdb/questdb")
-        println("https://github.com/protocolbuffers/protobuf")
-        println("https://github.com/serverless/serverless")
-    }
-}
-
-class DetectManifests: CliktCommand(help="Detects manifest files in the specified directory") {
-    private val path by argument()
-
-    override fun run() {
-        val normalizedPath = SystemUtils.normalizeFileSeparators(path)
-        val submodules = mutableListOf<String>()
-        val directory = File(normalizedPath)
-        val results = directory.walkTopDown().filter { it.name == "pom.xml" }.map { it.path }.toMutableList()
-
-        val mavenReader = MavenXpp3Reader()
-        results.forEach {modelFileName: String ->
-            val model = mavenReader.read(FileInputStream(modelFileName))
-            model.modules.forEach {moduleName: String ->
-                submodules.add(File(modelFileName).toPath().resolveSibling(moduleName).resolve("pom.xml").toString())
-            }
-        }
-
-        results.removeIf { submodules.contains(it) }
-
-        results.map{ it.removePrefix("$normalizedPath" + File.separator) }.sorted().forEach {
-            println(it)
-        }
-    }
-}
-
-class ProcessManifest: CliktCommand(help="Processes manifest files in the specified directory") {
-    private val manifestLocation by argument(name="MANIFEST_FILE")
-    private val asOfDate by argument(name="AS_OF_DATE")
-
-    override fun run() {
-        val manifestFile = File(SystemUtils.normalizeFileSeparators(manifestLocation))
-
-        if (!manifestFile.exists()) {
-            println("Unable to access $manifestLocation")
-            throw ProgramResult(-1)
-        }
-
-        val manifestDirectory = manifestFile.toPath().parent
-
-        runBlocking {
-            resolveVersionRanges(manifestDirectory)
-            generateBillOfMaterials(manifestDirectory)
-        }
-        restoreManifestFromBackup(manifestDirectory, manifestFile)
-
-        val bomFile = manifestDirectory.resolve("target").resolve("bom.json")
-        if (bomFile.exists()) {
-            println(bomFile.toFile().path)
-        } else {
-            println("Failed to process manifest: $manifestLocation")
-            throw ProgramResult(-1)
-        }
-    }
-
-    private fun restoreManifestFromBackup(manifestDirectory: Path, manifestFile: File) {
-        val backupManifestFile = manifestDirectory.resolve("pom.xml.versionsBackup")
-        if (backupManifestFile.exists()) {
-            manifestFile.delete()
-            backupManifestFile.toFile().renameTo(manifestFile)
-        }
-    }
-
-    private suspend fun generateBillOfMaterials(manifestDirectory: Path) {
-        val result = process(
-            SystemUtils.mavenCommand,
-            "org.cyclonedx:cyclonedx-maven-plugin:makeAggregateBom",
-            "-DincludeLicenseText=true",
-            "-DincludeTestScope=true",
-            "-DoutputFormat=json",
-
-            stdout = Redirect.CAPTURE,
-            stderr = Redirect.CAPTURE,
-
-            directory = manifestDirectory.toFile()
-        )
-
-        if (result.resultCode != 0) {
-            println("Failed to resolve version ranges. See command output for more information:")
-            println(result.output.joinToString("\n"))
-            throw ProgramResult(-1)
-        }
-    }
-
-    private suspend fun resolveVersionRanges(manifestDirectory: Path) {
-        val result = process(
-            SystemUtils.mavenCommand,
-            "com.corgibytes:versions-maven-plugin:resolve-ranges-historical",
-            "-DversionsAsOf=$asOfDate",
-
-            stdout = Redirect.CAPTURE,
-            stderr = Redirect.CAPTURE,
-
-            directory = manifestDirectory.toFile()
-        )
-
-        if (result.resultCode != 0) {
-            println("Failed to resolve version ranges. See command output for more information:")
-            println(result.output.joinToString("\n"))
-            throw ProgramResult(-1)
-        }
-    }
-}
-
 fun main(args: Array<String>) = FreshliAgentJava()
-    .subcommands(ValidatingPackageUrls(), RetrieveReleaseHistory(), ValidatingRepositories(), DetectManifests(), ProcessManifest())
+    .subcommands(
+        ValidatingPackageUrls(),
+        RetrieveReleaseHistory(),
+        ValidatingRepositories(),
+        DetectManifests(),
+        ProcessManifest(),
+        StartServer()
+    )
     .main(args)

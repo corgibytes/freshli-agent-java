@@ -3,6 +3,7 @@
 
 require 'English'
 require 'optparse'
+require 'fileutils'
 
 require_relative './support/execute'
 
@@ -39,11 +40,43 @@ rescue OptionParser::InvalidOption => e
   exit(-1)
 end
 
+# based on https://stackoverflow.com/a/29743469/243215
+def download(url, target_path)
+  # rubocop:disable Security/Open
+  require 'open-uri'
+  download = URI.open(url)
+  # rubocop:enable Security/Open
+  IO.copy_stream(download, target_path)
+end
+
 status = execute("ruby #{File.dirname(__FILE__)}/build.rb") if perform_build
 
 if status.nil? || status.success?
   status = execute("bundle check > #{null_output_target}")
   status = execute('bundle install') unless status.success?
+
+  FileUtils.mkdir_p('features/step_definitions/grpc')
+
+  if status.success?
+    status = execute(
+      'bundle exec grpc_tools_ruby_protoc -I src/main/proto --ruby_out=features/step_definitions/grpc ' \
+      '--grpc_out=features/step_definitions/grpc src/main/proto/freshli_agent.proto'
+    )
+  end
+
+  FileUtils.mkdir_p('tmp')
+
+  if status.success?
+    download(
+      'https://raw.githubusercontent.com/grpc/grpc-java/3c5c2be7125d57ca48d69ad6aa2682e6d4094487/services/src' \
+      '/main/proto/grpc/health/v1/health.proto',
+      File.expand_path(File.join(File.dirname(__FILE__), '..', 'tmp', 'health.proto'))
+    )
+    status = execute(
+      'bundle exec grpc_tools_ruby_protoc -I tmp --ruby_out=features/step_definitions/grpc ' \
+      '--grpc_out=features/step_definitions/grpc tmp/health.proto'
+    )
+  end
 
   status = execute('./gradlew test') if status.success?
   status = execute('bundle exec cucumber --color --backtrace') if status.success?
