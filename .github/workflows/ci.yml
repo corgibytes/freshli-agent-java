@@ -39,10 +39,11 @@ jobs:
 
       - name: "[Setup] - Install CycloneDX CLI (Windows)"
         if: runner.os == 'Windows'
+        shell: pwsh
         run: |
           cd bin
           Invoke-WebRequest -Uri https://github.com/CycloneDX/cyclonedx-cli/releases/download/v0.24.0/cyclonedx-win-x64.exe -OutFile cyclonedx.exe
-          echo "$GITHUB_WORKSPACE/bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+          "$env:GITHUB_WORKSPACE\bin" >> $env:GITHUB_PATH
 
       - name: "[Setup] - Install CycloneDX CLI (Linux)"
         if: runner.os != 'Windows'
@@ -52,7 +53,7 @@ jobs:
           chmod a+x cyclonedx-linux-x64
           mv cyclonedx-linux-x64 cyclonedx
           echo "$GITHUB_WORKSPACE/bin" >> $GITHUB_PATH
-        
+
 
       - name: "[Lint] - run linters"
         run: |
