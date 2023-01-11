@@ -44,6 +44,8 @@ jobs:
           cd bin
           Invoke-WebRequest -Uri https://github.com/CycloneDX/cyclonedx-cli/releases/download/v0.24.0/cyclonedx-win-x64.exe -OutFile cyclonedx.exe
           "$env:GITHUB_WORKSPACE\bin" >> $env:GITHUB_PATH
+          cd ..
+          cyclonedx --help
 
       - name: "[Setup] - Install CycloneDX CLI (Linux)"
         if: runner.os != 'Windows'
