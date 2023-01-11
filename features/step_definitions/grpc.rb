@@ -12,7 +12,7 @@ When('the gRPC service on port {int} is sent the shutdown command') do |port|
 end
 
 Then('there are no services running on port {int}') do |port|
-  expect(Ports.available?(port)).to be_truthy
+  expect(Ports.available?(port) { |attempts| log(attempts) }).to be_truthy
 end
 
 test_services = TestServices.new
