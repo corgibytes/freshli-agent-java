@@ -4,7 +4,7 @@
 module Ports
   # rubocop:disable Metrics/MethodLength
   def self.available?(port)
-    max_attempts = 200
+    max_attempts = 1000
     attempts = 0
     begin
       attempts += 1
