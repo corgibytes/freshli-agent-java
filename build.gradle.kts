@@ -34,7 +34,7 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
     implementation("com.github.pgreze:kotlin-process:1.4.1")
     implementation("com.github.oshi:oshi-core:6.4.0")
-    runtimeOnly("org.slf4j:slf4j-simple:2.0.5")
+    runtimeOnly("org.slf4j:slf4j-simple:2.0.6")
 
     api("io.grpc:grpc-stub:$grpcVersion")
     api("io.grpc:grpc-protobuf:$grpcVersion")
