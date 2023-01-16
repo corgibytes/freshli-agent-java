@@ -43,7 +43,7 @@ dependencies {
     api("com.google.protobuf:protobuf-java-util:$protobufVersion")
     api("com.google.protobuf:protobuf-kotlin:$protobufVersion")
     api("io.grpc:grpc-kotlin-stub:$grpcKotlinVersion")
-    api("com.google.protobuf:protobuf-gradle-plugin:0.9.1")
+    api("com.google.protobuf:protobuf-gradle-plugin:0.9.2")
 
     testImplementation(kotlin("test"))
 }
