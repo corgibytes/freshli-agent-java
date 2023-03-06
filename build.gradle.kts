@@ -7,7 +7,7 @@ import org.gradle.kotlin.dsl.invoke
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    kotlin("jvm") version "1.8.0"
+    kotlin("jvm") version "1.8.10"
     id("com.google.protobuf") version "0.8.18"
     idea
 
