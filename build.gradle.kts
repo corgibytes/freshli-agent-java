@@ -33,7 +33,7 @@ dependencies {
     implementation("org.apache.maven:maven-model:3.9.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
     implementation("com.github.pgreze:kotlin-process:1.4.1")
-    implementation("com.github.oshi:oshi-core:6.4.0")
+    implementation("com.github.oshi:oshi-core:6.4.1")
     runtimeOnly("org.slf4j:slf4j-simple:2.0.6")
 
     api("io.grpc:grpc-stub:$grpcVersion")
