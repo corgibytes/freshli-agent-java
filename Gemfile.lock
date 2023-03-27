@@ -79,7 +79,7 @@ GEM
       rubocop (>= 1.7.0, < 2.0)
       rubocop-ast (>= 0.4.0)
     ruby-progressbar (1.13.0)
-    sqlite3 (1.6.1)
+    sqlite3 (1.6.2)
       mini_portile2 (~> 2.8.0)
     sys-uname (1.2.2)
       ffi (~> 1.1)
