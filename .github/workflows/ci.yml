@@ -63,6 +63,10 @@ jobs:
         run: |
           ruby ./bin/build.rb
 
+      - name: "[Test] - add `freshli-agent-java` to path"
+        run: |
+          echo "./build/install/freshli-agent-java/bin/freshli-agent-java" >> $GITHUB_PATH
+
       - name: "[Test] - run all tests"
         run: |
           ruby ./bin/test.rb --skip-build
