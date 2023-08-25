@@ -9,11 +9,7 @@ Feature: `start-server` command
   Scenario: Starting the server with a provided port number
     Given there are no services running on port 8124
     When I run `freshli-agent-java start-server 8124` interactively
-    And I wait for output to contain:
-    """
-    Listening on 8124...
-    """
-    Then the freshli_agent.proto gRPC service is running on port 8124
+    Then I wait for the freshli_agent.proto gRPC service to be running on port 8124
     When the gRPC service on port 8124 is sent the shutdown command
     Then there are no services running on port 8124
     And the exit status should be 0
