@@ -54,7 +54,6 @@ jobs:
           mv cyclonedx-linux-x64 cyclonedx
           echo "$GITHUB_WORKSPACE/bin" >> $GITHUB_PATH
 
-
       - name: "[Lint] - run linters"
         run: |
           ruby ./bin/lint.rb
