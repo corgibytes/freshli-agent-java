@@ -57,3 +57,5 @@ features/step_definitions/grpc/
 
 # common path for storing gems in local directory
 vendor/
+
+exe/
