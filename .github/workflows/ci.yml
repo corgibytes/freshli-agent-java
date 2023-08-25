@@ -67,12 +67,12 @@ jobs:
         if: runner.os == 'Windows'
         shell: pwsh
         run: |
-          "$env:GITHUB_WORKSPACE\build\install\freshli-agent-java\bin\freshli-agent-java" >> $env:GITHUB_PATH
+          "$env:GITHUB_WORKSPACE\build\install\freshli-agent-java\bin" >> $env:GITHUB_PATH
 
       - name: "[Test] - add `freshli-agent-java` to path (Linux)"
         if: runner.os != 'Windows'
         run: |
-          echo "$GITHUB_WORKSPACE/build/install/freshli-agent-java/bin/freshli-agent-java" >> $GITHUB_PATH
+          echo "$GITHUB_WORKSPACE/build/install/freshli-agent-java/bin" >> $GITHUB_PATH
 
       - name: "[Test] - run all tests"
         run: |
