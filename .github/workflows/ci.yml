@@ -63,9 +63,16 @@ jobs:
         run: |
           ruby ./bin/build.rb
 
-      - name: "[Test] - add `freshli-agent-java` to path"
+      - name: "[Test] - add `freshli-agent-java` to path (Windows)"
+        if: runner.os == 'Windows'
+        shell: pwsh
         run: |
-          echo "./build/install/freshli-agent-java/bin/freshli-agent-java" >> $GITHUB_PATH
+          "$env:GITHUB_WORKSPACE\build\install\freshli-agent-java\bin\freshli-agent-java" >> $env:GITHUB_PATH
+
+      - name: "[Test] - add `freshli-agent-java` to path (Linux)"
+        if: runner.os != 'Windows'
+        run: |
+          echo "$GITHUB_WORKSPACE/build/install/freshli-agent-java/bin/freshli-agent-java" >> $GITHUB_PATH
 
       - name: "[Test] - run all tests"
         run: |
