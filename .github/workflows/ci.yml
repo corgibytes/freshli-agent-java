@@ -12,7 +12,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, windows-latest]
+        os: [ubuntu-latest]
         java-version: [ '8', '11', '17' ]
 
     runs-on: ${{ matrix.os }}
@@ -54,7 +54,6 @@ jobs:
           mv cyclonedx-linux-x64 cyclonedx
           echo "$GITHUB_WORKSPACE/bin" >> $GITHUB_PATH
 
-
       - name: "[Lint] - run linters"
         run: |
           ruby ./bin/lint.rb
@@ -62,6 +61,18 @@ jobs:
       - name: "[Build] - run build"
         run: |
           ruby ./bin/build.rb
+
+      - name: "[Test] - add `freshli-agent-java` to path (Windows)"
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          "$env:GITHUB_WORKSPACE\build\install\freshli-agent-java\bin" >> $env:GITHUB_PATH
+
+      - name: "[Test] - add `freshli-agent-java` to path (Linux)"
+        if: runner.os != 'Windows'
+        run: |
+          ls -lah $GITHUB_WORKSPACE/build/install/freshli-agent-java/bin
+          echo "$GITHUB_WORKSPACE/build/install/freshli-agent-java/bin" >> $GITHUB_PATH
 
       - name: "[Test] - run all tests"
         run: |

@@ -22,11 +22,6 @@ import kotlin.system.exitProcess
 
 fun main(args: Array<String>) = FreshliAgentJava()
     .subcommands(
-        ValidatingPackageUrls(),
-        RetrieveReleaseHistory(),
-        ValidatingRepositories(),
-        DetectManifests(),
-        ProcessManifest(),
         StartServer()
     )
     .main(args)
