@@ -2,6 +2,6 @@
 
 source 'https://rubygems.org'
 
+gem 'freshli-commons'
 gem 'rubocop'
 gem 'rubocop-performance'
-gem 'freshli-commons'
