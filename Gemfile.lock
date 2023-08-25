@@ -40,7 +40,7 @@ GEM
     ffi (1.15.5)
     ffi (1.15.5-x64-mingw-ucrt)
     ffi (1.15.5-x64-mingw32)
-    freshli-commons (0.6.1)
+    freshli-commons (0.6.3)
       aruba (~> 2.1.0)
       grpc
       grpc-tools
