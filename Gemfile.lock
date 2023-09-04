@@ -39,7 +39,7 @@ GEM
     cucumber-tag-expressions (4.1.0)
     diff-lcs (1.5.0)
     ffi (1.15.5)
-    freshli-commons (0.6.4)
+    freshli-commons (0.6.5)
       aruba (~> 2.1.0)
       grpc
       grpc-tools
