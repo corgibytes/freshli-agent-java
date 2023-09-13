@@ -86,6 +86,8 @@ class AgentServer(val port: Int) {
                     }
                     .asFlow()
             } catch (failure: ReleaseHistoryRetrievingFailure) {
+                System.err.println("ERROR: Retrieving release history failed:")
+                System.err.println(failure.stackTraceToString())
                 emptyList<FreshliAgent.PackageRelease>().asFlow()
             }
         }

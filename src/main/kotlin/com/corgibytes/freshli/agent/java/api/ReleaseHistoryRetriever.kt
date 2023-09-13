@@ -3,6 +3,7 @@ package com.corgibytes.freshli.agent.java.api
 import com.corgibytes.maven.ReleaseHistoryService
 import com.github.packageurl.MalformedPackageURLException
 import com.github.packageurl.PackageURL
+import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
 class ReleaseHistoryRetriever {
@@ -24,7 +25,13 @@ class ReleaseHistoryRetriever {
             ReleaseHistoryService()
         }
 
-        val actualResults = service.getVersionHistory(purl.namespace, purl.name)
+        var actualResults: Map<String, ZonedDateTime>
+
+        try {
+            actualResults = service.getVersionHistory(purl.namespace, purl.name)
+        } catch (error: Exception) {
+            throw ReleaseHistoryRetrievingFailure("Unable to retrieve release history for: $packageURL", error)
+        }
 
         return if (actualResults.isEmpty()) {
             emptyList()
