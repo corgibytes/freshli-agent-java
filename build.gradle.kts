@@ -25,7 +25,7 @@ val grpcKotlinVersion: String by project
 dependencies {
 
     implementation("com.github.ajalt.clikt:clikt:4.2.0")
-    implementation("com.corgibytes:dependency-history-maven:2.0.42")
+    implementation("com.corgibytes:dependency-history-maven:2.0.45")
     implementation("com.github.package-url:packageurl-java:1.4.1")
     implementation("org.apache.maven:maven-model:3.9.4")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
